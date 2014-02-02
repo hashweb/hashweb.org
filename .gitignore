@@ -1,9 +1,6 @@
 *.pyc
 
 settings.py
-
-*.json
-
 *~
 
 **/*.pyc
