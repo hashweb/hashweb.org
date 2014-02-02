@@ -1,0 +1,13 @@
+*.pyc
+
+settings.py
+
+*.json
+
+*~
+
+**/*.pyc
+
+hashweb/static/vendor/*
+# markdown preview for sublime text generates readme.html files
+README.html
