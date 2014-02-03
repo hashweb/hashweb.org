@@ -75,7 +75,7 @@ def getFullUserCount(channelName):
     results = []
     if (channel):
         for i in UserCount.objects.filter(channel_id=channel):
-            results.append({"count": i.count, "timestamp": str(i.timestamp)})
+            results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
 
         return results
     return False

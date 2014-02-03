@@ -1,53 +1,63 @@
 require([], function() {
 
-	var margin = {top: 30, right: 20, bottom: 30, left: 50},
-	    width = 600 - margin.left - margin.right,
-	    height = 270 - margin.top - margin.bottom;
+	var margin = {top: 10, right: 10, bottom: 100, left: 400},
+    width  = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-	var parseDate = d3.time.format("%d-%b-%y").parse;
+	var parseDate = d3.time.format("%a, %d %b %Y %H:%M:%S %Z").parse;
 
-	var x = d3.time.scale().range([0, width]);
-	var y = d3.scale.linear().range([height, 0]);
+	var x = d3.time.scale().range([0, width]),
+	    y = d3.scale.linear().range([height, 0]);
 
-	var xAxis = d3.svg.axis().scale(x)
-	    .orient("bottom").ticks(5);
+	var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+	    yAxis = d3.svg.axis().scale(y).orient("left");
 
-	var yAxis = d3.svg.axis().scale(y)
-	    .orient("left").ticks(5);
+	var brush = d3.svg.brush().on("brush", brushed);
 
-	var valueline = d3.svg.line()
-	    .x(function(d) { return x(d.date); })
-	    .y(function(d) { return y(d.close); });
-	    
-	var svg = d3.select("body")
-	    .append("svg")
-	        .attr("width", width + margin.left + margin.right)
-	        .attr("height", height + margin.top + margin.bottom)
-	    .append("g")
-	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var area = d3.svg.area()
+	    .interpolate("monotone")
+	    .x(function(d) { return x(d.timestamp); })
+	    .y0(height)
+	    .y1(function(d) { return y(d.count); });
 
-	d3.json('getfullusercount', function(error, data) {
-		console.log(data);
-		data.forEach(function(d) {
-			d.timestamp = parseDate(d.timestamp);
-			console.log(d);
-			d.count = +d.count;
-		});
+	var svg = d3.select("body").append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom);
 
-		// Scale the range of the data
-	    x.domain(d3.extent(data, function(d) { return d.timestamp; }));
-	    y.domain([0, d3.max(data, function(d) { return d.count; })]);
+	svg.append("defs").append("clipPath")
+	    .attr("id", "clip")
+	    .append("rect")
+	    .attr("width", width)
+	    .attr("height", height);
 
-	    svg.append("path")      // Add the valueline path.
-        	.attr("d", valueline(data));
+	var focus = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        svg.append("g")         // Add the X Axis
-        	.attr("class", "x axis")
-        	.attr("transform", "translate(0," + height + ")")
-        	.call(xAxis);
+	d3.json('getfullusercount', function (data) {
+	    data.forEach(function(d) {
+	      d.timestamp = parseDate(d.timestamp);
+	    });
 
-	    svg.append("g")         // Add the Y Axis
-    	    .attr("class", "y axis")
-       		.call(yAxis);
-	})
+	  x.domain(d3.extent(data.map(function(d) { return d.timestamp; })));
+	  y.domain([0, d3.max(data.map(function(d) { return d.count; }))]);
+
+	  focus.append("path")
+	       .datum(data)
+	       .attr("clip-path", "url(#clip)")
+	       .attr("d", area);
+
+	  focus.append("g")
+	       .attr("class", "x axis")
+	       .attr("transform", "translate(0," + height + ")")
+	       .call(xAxis);
+
+	  focus.append("g")
+	       .attr("class", "y axis")
+	       .call(yAxis);
+	});
+
+  	function brushed() {
+	    x.domain(brush.empty() ? x2.domain() : brush.extent());
+	    focus.select("path").attr("d", area);
+	    focus.select(".x.axis").call(xAxis);
+ 	}
 });
