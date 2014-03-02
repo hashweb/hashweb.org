@@ -7,6 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
+    url(r'^(.*)/getfullusercounttoday', 'stats.views.getFullUserCountToday'),
     url(r'^(.*)/getfullusercount', 'stats.views.getFullUserCount'),
     url(r'^(.*)/', 'stats.views.index'),
     # url(r'^blog/', include('blog.urls')),

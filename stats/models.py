@@ -8,8 +8,10 @@
 # Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
 # into your database.
 from __future__ import unicode_literals
+import datetime
 
 from django.db import models
+from django.utils import timezone
 
 class Channels(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -66,7 +68,7 @@ def _getChannelID(channelName):
         return False
 
 
-def getFullUserCount(channelName):
+def getFullUserCount(channelName, timefrom=False, timeto=False):
     """
     Returns the full user count table, including userCount and timestamp
     """
@@ -74,9 +76,17 @@ def getFullUserCount(channelName):
     channel = _getChannelID(channelName)
     results = []
     if (channel):
-        for i in UserCount.objects.filter(channel_id=channel):
-            results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
+        if (timefrom):
+            for i in UserCount.objects.filter(channel_id=channel, timestamp__gte=timefrom):
+                results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
+        else:
+            for i in UserCount.objects.filter(channel_id=channel):
+                results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
 
         return results
     return False
 
+def getFullUserCountToday(channelName):
+    yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
+    yesterday = timezone.make_aware(yesterday, timezone.get_current_timezone())
+    return getFullUserCount(channelName, yesterday)
