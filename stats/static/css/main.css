@@ -3,7 +3,7 @@ body { font: 12px Arial;}
 path { 
     stroke: steelblue;
     stroke-width: 2;
-    fill: steelblue;
+    fill:  rgb(143, 177, 206);
 }
 
 .axis path,
@@ -12,4 +12,12 @@ path {
     stroke: grey;
     stroke-width: 1;
     shape-rendering: crispEdges;
+}
+
+.container {
+	padding: 30px;
+}
+
+.logo {
+	width: 240px;
 }

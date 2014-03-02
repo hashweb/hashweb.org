@@ -90,3 +90,8 @@ def getFullUserCountToday(channelName):
     yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
     yesterday = timezone.make_aware(yesterday, timezone.get_current_timezone())
     return getFullUserCount(channelName, yesterday)
+
+def getFullUserCountWeek(channelName):
+    week = datetime.datetime.now() - datetime.timedelta(days = 7)
+    week = timezone.make_aware(week, timezone.get_current_timezone())
+    return getFullUserCount(channelName, week)

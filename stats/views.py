@@ -18,3 +18,8 @@ def getFullUserCountToday(request, channelName):
 	channelName = '#' + channelName
 	fullUserCount = models.getFullUserCountToday(channelName)
 	return HttpResponse(json.dumps(fullUserCount), content_type="application/json")
+
+def getFullUserCountWeek(request, channelName):
+	channelName = '#' + channelName
+	fullUserCount = models.getFullUserCountWeek(channelName)
+	return HttpResponse(json.dumps(fullUserCount), content_type="application/json")

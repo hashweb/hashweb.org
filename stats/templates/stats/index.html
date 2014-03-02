@@ -14,14 +14,22 @@
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
     </head>
     <body>
-        <h2>Since January</h2>
-        <div class="fullCount"></div>
+        <div class="container">
+            <img src="{% static 'img/logo.png' %}" class="logo" />
+            <h1>Stats</h1>
+            <h2>Users in the channel</h2>
+            <h3>Since January</h3>
+            <div class="fullCount"></div>
 
-        <h2>Past 24 hours</h2>
-        <div class="pastDayCount"></div>
-        <!--[if lt IE 8]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+            <h3>Past week</h3>
+            <div class="pastWeekCount"></div>
+
+            <h3>Past 24 hours</h3>
+            <div class="pastDayCount"></div>
+            <!--[if lt IE 8]>
+                <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+            <![endif]-->
+        </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
