@@ -33,6 +33,7 @@ require([], function() {
 	var focus = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	d3.json('getfullusercount', function (data) {
+		console.log(data);
 	    data.forEach(function(d) {
 	      d.timestamp = parseDate(d.timestamp);
 	    });
