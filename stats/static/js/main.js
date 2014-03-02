@@ -1,6 +1,6 @@
 require([], function() {
 
-	var margin = {top: 10, right: 10, bottom: 100, left: 400},
+	var margin = {top: 10, right: 10, bottom: 100, left: 100},
     width  = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -33,7 +33,6 @@ require([], function() {
 	var focus = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	d3.json('getfullusercount', function (data) {
-		console.log(data);
 	    data.forEach(function(d) {
 	      d.timestamp = parseDate(d.timestamp);
 	    });
