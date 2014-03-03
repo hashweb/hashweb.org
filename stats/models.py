@@ -95,3 +95,8 @@ def getFullUserCountWeek(channelName):
     week = datetime.datetime.now() - datetime.timedelta(days = 7)
     week = timezone.make_aware(week, timezone.get_current_timezone())
     return getFullUserCount(channelName, week)
+
+# get all users
+# select userName, sum(countName) as counting from (
+#   select users.user as userName, count(messages.user) as countName from messages INNER JOIN users ON (messages.user = users.id) group by messages.user, users.user, users.host order by countName DESC
+# ) AS foo GROUP BY foo.username ORDER BY counting DESC;
