@@ -7,6 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
+    url(r'^(.*)/getchattyusers', 'stats.views.getChattyUsers'),
     url(r'^(.*)/getfullusercountweek', 'stats.views.getFullUserCountWeek'),
     url(r'^(.*)/getfullusercounttoday', 'stats.views.getFullUserCountToday'),
     url(r'^(.*)/getfullusercount', 'stats.views.getFullUserCount'),
@@ -15,3 +16,4 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

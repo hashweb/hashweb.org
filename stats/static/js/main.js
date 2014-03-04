@@ -1,4 +1,4 @@
-require(['graphs/fullcount', 'graphs/fullCountWeek', 'graphs/fullCountToday'], function(fullcount, fullCountToday) {
+require(['graphs/fullcount', 'graphs/fullCountWeek', 'graphs/fullCountToday', 'graphs/chattyUsers'], function(fullcount, fullCountToday) {
 
 	
 });
