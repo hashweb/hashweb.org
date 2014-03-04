@@ -31,8 +31,12 @@ define(function() {
 
 	  svg.append("g")
 	      .attr("class", "x axis")
-	      .attr("transform", "translate(0," + height + ")")
-	      .call(xAxis);
+	      .attr("transform", "translate(0," + (height + 10) + ")")
+	      .call(xAxis)
+	      .selectAll('text')
+	      	.attr('transform', function(d) {
+	      		return 'rotate(-65)'
+	      	});
 
 	  svg.append("g")
 	      .attr("class", "y axis")
@@ -42,7 +46,7 @@ define(function() {
 	      .attr("y", 6)
 	      .attr("dy", ".71em")
 	      .style("text-anchor", "end")
-	      .text("Frequency");
+	      .text("number of messages");
 
 	  svg.selectAll(".bar")
 	      .data(data)
