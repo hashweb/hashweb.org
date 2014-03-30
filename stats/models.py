@@ -38,7 +38,7 @@ class UserCount(models.Model):
     count = models.IntegerField()
     timestamp = models.DateTimeField(blank=True, null=True)
     channel_id = models.IntegerField(blank=True, null=True)
-    topic = models.CharField(max_length=100, blank=True)
+    topic = models.CharField(max_length=100, blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'user_count'
@@ -72,10 +72,10 @@ def getFullUserCount(channelName, timefrom=False, timeto=False):
     results = []
     if (channel):
         if (timefrom):
-            for i in UserCount.objects.filter(channel_id=channel, timestamp__gte=timefrom):
+            for i in UserCount.objects.filter(channel_id=channel, timestamp__gte=timefrom).order_by('-timestamp'):
                 results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
         else:
-            for i in UserCount.objects.filter(channel_id=channel):
+            for i in UserCount.objects.filter(channel_id=channel).order_by('-timestamp'):
                 results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
 
         return results
@@ -105,7 +105,6 @@ def getChattyUsers(channelName):
     for i in resultSet:
         newResultSet.append({'user': i, 'noOfMessages': resultSet[i]})
 
-    print newResultSet
     return newResultSet
 
 # get all users

@@ -4,7 +4,9 @@ settings.py
 hashweb.wsgi
 hashweb/uwsgi_params
 hashweb_uwsgi.ini
+.vagrant*
 *~
+config.json
 
 **/*.pyc
 
