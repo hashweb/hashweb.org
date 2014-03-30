@@ -6,8 +6,8 @@ from stats import models
 # Create your views here.
 def index(request, channelName):
 	channelName = '#' + channelName
-	fullUserCount = models.getFullUserCount(channelName)
-	return render(request, 'stats/index.html', {"fullUserCount" : json.dumps(fullUserCount)})
+	# fullUserCount = models.getFullUserCount(channelName)
+	return render(request, 'stats/index.html')
 
 def getFullUserCount(request, channelName):
 	channelName = '#' + channelName
