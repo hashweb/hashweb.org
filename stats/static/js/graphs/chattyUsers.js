@@ -61,7 +61,9 @@ d3.json("getchattyusers", function(error, data) {
 	      .attr("x", function(d) { return x(d.user); })
 	      .attr("width", x.rangeBand())
 	      .attr("y", function(d) { return y(d.noOfMessages); })
-	      .attr("height", function(d) { return height - y(d.noOfMessages); });
+	      .attr("height", function(d) { return height - y(d.noOfMessages); })
+	    .append("svg:title")
+	    	.text(function(d, i) { return "Message count is " + d.noOfMessages; })
 
 	  d3.select("input").on("change", change);
 
