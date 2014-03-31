@@ -13,6 +13,7 @@ import json
 
 from django.db import models
 from django.utils import timezone
+from django.core.cache import cache
 
 class Channels(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -75,9 +76,14 @@ def getFullUserCount(channelName, timefrom=False, timeto=False):
             for i in UserCount.objects.filter(channel_id=channel, timestamp__gte=timefrom).order_by('-timestamp'):
                 results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
         else:
-            for i in UserCount.objects.filter(channel_id=channel).order_by('-timestamp'):
-                results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
-
+            # Full user count, look in the cache
+            if cache.get('getFullUserCount'):
+                results = cache.get('getFullUserCount')
+            else:
+                for i in UserCount.objects.filter(channel_id=channel).order_by('-timestamp'):
+                    results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
+                #cache the result because its heavy
+                cache.set('getFullUserCount', results, 3600)
         return results
     return False
 

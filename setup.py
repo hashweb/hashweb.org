@@ -43,7 +43,7 @@ userPass = data['db']['password']
 # libpq-dev and python-dev needs to be installed for psycopg2
 # ipython notebook for a better shell
 subprocess.call(['apt-get', 'update'])
-subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip', 'git', 'ipython-notebook'])
+subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip', 'git', 'ipython-notebook', 'memcached', 'python-memcached', 'htop'])
 subprocess.call(['pip', 'install', 'psycopg2'])
 subprocess.call(['pip', 'install', 'django'])
 
@@ -55,6 +55,7 @@ if not os.path.exists('Limnoria'):
 os.chdir('Limnoria');
 subprocess.call(['python', 'setup.py', 'install'])
 os.chdir('../')
+
 # Get the bootstrapped logbot project
 subprocess.call(['wget', 'http://logs.hashweb.org/dev/logbot.tar.gz'])
 subprocess.call(['mkdir', 'logbot'])
@@ -65,6 +66,10 @@ print 'Pulling down latest database dump....'
 os.chdir('logbot/plugins/LogsToDB')
 os.remove('logs_stats.sql')
 subprocess.call(['wget', 'http://logs.hashweb.org/dev/logs_stats.sql'])
+
+#Start up memcached
+print 'Starting up Memcached....'
+subprocess.call(['memcached', '-d', '-s', '/tmp.memcached.sock'])
 
 # Creating a new user is a pain, so just let sandboxed users use the postgres user
 # os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD \'%s\';" | sudo -u postgres psql' % (userName, userPass))
