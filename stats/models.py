@@ -99,24 +99,13 @@ def getFullUserCountWeek(channelName):
 
 def getChattyUsers(channelName):
     # Warning, this does not filter by channel, default #web
-    result = Users.objects.annotate(totalCount=models.Count('messages')).values_list('user', 'totalCount').order_by('-totalCount')[:60]
-    resultSet = {}
-    newResultSet = []
-    for item in result:
-        if resultSet.has_key(item[0]):
-            resultSet[item[0]] += item[1]
-        else:
-            resultSet[item[0]] = item[1]
-
-    for i in resultSet:
-        newResultSet.append({'user': i, 'noOfMessages': resultSet[i]})
-
-    return newResultSet
-
-# get all users
-# select userName, sum(countName) as counting from (
-#   select users.user as userName, count(messages.user) as countName from messages INNER JOIN users ON (messages.user = users.id) group by messages.user, users.user, users.host order by countName DESC
-# ) AS foo GROUP BY foo.username ORDER BY counting DESC;
-
-
-# select users.user as userName, count(messages.user) as totalCount from messages INNER JOIN users ON (messages.user = users.id) GROUP BY users.user ORDER BY totalCount desc;
+    if (cache.get('getChattyUsers') is None):
+        result = Users.objects.values('user').annotate(noOfMessages=models.Count('messages')).values_list('user', 'noOfMessages').order_by('-noOfMessages')[:60]
+        result = list(result)
+        resultSet = []
+        for i in result:
+            resultSet.append({'user': i[0], 'noOfMessages': i[1]})
+        cache.set('getChattyUsers', resultSet, 300)
+    else:
+        resultSet = cache.get('getChattyUsers')
+    return resultSet
