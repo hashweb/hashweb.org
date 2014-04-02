@@ -21,6 +21,7 @@ def getUserInfo(request, channelName, username):
 	
 	# Get the last time the user was seen
 	notSeenFor = {}
+	notSeenFor['days'] = models.lastSeenDelta(channelName, username).days
 	notSeenFor['seconds'] = models.lastSeenDelta(channelName, username).seconds
 	notSeenFor['hours'] = notSeenFor['seconds'] // 3600
 	notSeenFor['seconds'] = notSeenFor['seconds'] - (notSeenFor['hours'] * 3600)
