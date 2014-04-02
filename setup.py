@@ -43,9 +43,10 @@ userPass = data['db']['password']
 # libpq-dev and python-dev needs to be installed for psycopg2
 # ipython notebook for a better shell
 subprocess.call(['apt-get', 'update'])
-subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip', 'git', 'ipython-notebook', 'memcached', 'python-memcached', 'htop'])
+subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip', 'git', 'ipython-notebook', 'memcached', 'htop'])
 subprocess.call(['pip', 'install', 'psycopg2'])
 subprocess.call(['pip', 'install', 'django'])
+subprocess.call(['pip', 'install', 'python-memcached'])
 
 # Get Limnoria & install it
 os.chdir('../');

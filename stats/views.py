@@ -7,7 +7,15 @@ from stats import models
 def index(request, channelName):
 	channelName = '#' + channelName
 	# fullUserCount = models.getFullUserCount(channelName)
-	return render(request, 'stats/index.html')
+	mostFullTime = __getMostFullTime(channelName)
+	return render(request, 'stats/index.html', {'mostFullTime': mostFullTime})
+
+def getUserInfo(request, channelName, username):
+	channelName = '#' + channelName
+	mostFullTime = __getMostFullTime(channelName)
+	firstAndLastSeenConvo = models.getFirstAndLastSeen(channelName, username)
+	return render(request, 'stats/userinfo.html', {'mostFullTime': mostFullTime, 'firstSeen': firstAndLastSeenConvo[0], 'lastSeen': firstAndLastSeenConvo[1]})
+
 
 def getFullUserCount(request, channelName):
 	channelName = '#' + channelName
@@ -28,3 +36,7 @@ def getChattyUsers(request, channelName):
 	channelName = '#' + channelName
 	chattyUsers = models.getChattyUsers(channelName)
 	return HttpResponse(json.dumps(chattyUsers), content_type="application/json")
+
+def __getMostFullTime(channelName):
+	mostFullTime = models.getMostFullTime(channelName)
+	return mostFullTime

@@ -7,11 +7,12 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^(.*)/getchattyusers', 'stats.views.getChattyUsers'),
-    url(r'^(.*)/getfullusercountweek', 'stats.views.getFullUserCountWeek'),
-    url(r'^(.*)/getfullusercounttoday', 'stats.views.getFullUserCountToday'),
-    url(r'^(.*)/getfullusercount', 'stats.views.getFullUserCount'),
-    url(r'^(.*)/', 'stats.views.index'),
+    url(r'^(\w*)/users/(\w*)', 'stats.views.getUserInfo'),
+    url(r'^(\w*)/getchattyusers', 'stats.views.getChattyUsers'),
+    url(r'^(\w*)/getfullusercountweek', 'stats.views.getFullUserCountWeek'),
+    url(r'^(\w*)/getfullusercounttoday', 'stats.views.getFullUserCountToday'),
+    url(r'^(\w*)/getfullusercount', 'stats.views.getFullUserCount'),
+    url(r'^(\w*)/', 'stats.views.index'),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),

@@ -29,7 +29,7 @@ class Messages(models.Model):
     content = models.TextField(blank=True)
     action = models.TextField(blank=True) # This field type is a guess.
     timestamp = models.DateTimeField(blank=True, null=True)
-    channel_id = models.ForeignKey('Channels')
+    channel_id = models.ForeignKey('Channels', db_column='channel_id')
     class Meta:
         managed = False
         db_table = 'messages'
@@ -58,10 +58,17 @@ def _getChannelID(channelName):
     """
     Returns the correct ID for the channelName provided
     """
-    if len(Channels.objects.filter(channel_name=channelName)):
-        return Channels.objects.filter(channel_name=channelName)[0].id
+    if cache.get('getChannelID_' + channelName):
+        channelID = cache.get('getChannelID_' + channelName)
+        return channelID
     else:
-        return False
+        if len(Channels.objects.filter(channel_name=channelName)):
+            channelID = Channels.objects.filter(channel_name=channelName)[0].id
+            # ChannelIDs are never going to change, so give them a long cache time, 1 day should do
+            cache.set('getChannelID_' + channelName, channelID, 86400)
+            return channelID
+        else:
+            return False
 
 
 def getFullUserCount(channelName, timefrom=False, timeto=False):
@@ -109,3 +116,74 @@ def getChattyUsers(channelName):
     else:
         resultSet = cache.get('getChattyUsers')
     return resultSet
+
+def getUserProfanity(channelName):
+    #warning this does not filter by channel, default #web
+    # select users.user, count(users.user) as userCount from messages inner join users on (messages.user = users.id) where to_tsvector('english', content) @@ to_tsquery('english', 'fuck') group by  users.user order by userCount desc;
+
+    resultSet = []
+    for i in Users.objects.raw("select users.user, users.id, count(users.user) as userCount from messages inner join users on (messages.user = users.id) where to_tsvector('english', content) @@ to_tsquery('english', 'fuck') group by  users.user, users.id order by userCount desc LIMIT 20;"):
+        resultSet.append({'user': i.user, 'noOfMessages': i.usercount})
+    return resultSet
+
+def getMostFullTime(channelName):
+    # select count, timestamp from user_count WHERE channel_id = 1 order by count desc LIMIT 1;
+    channel = _getChannelID(channelName)
+    result = {}
+    mostFullTime = UserCount.objects.filter(channel_id=channel).order_by('-count').values_list('count', 'timestamp')[0]
+    result['count'] = mostFullTime[0]
+    result['timestamp'] = mostFullTime[1]
+    result['timeSince'] = timezone.now() - mostFullTime[1]
+
+    return result
+
+def getUserLastSeen(channelName, username):
+    # select * from users inner join messages on (users.id = messages.user) where users.user = 'Jayflux' AND action = 'message' AND channel_id = 1 order by timestamp asc LIMIT 1;
+    channel = _getChannelID(channelName)
+    lastSeenObj = Messages.objects.filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('-timestamp')[0]
+    return lastSeenObj
+
+def getUserFirstSeen(channelName, username):
+    # reverse of last see
+    # TODO: First seen could be cached for a long time as its data that won't change
+    channel = _getChannelID(channelName)
+    firstSeenObj = Messages.objects.filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('timestamp')[0]
+    return firstSeenObj
+
+def getConvoPartialFromID(channelName, message_ID, length):
+    channel = _getChannelID(channelName)
+    message_ID_end =  message_ID + length;
+    return Messages.objects.filter(id__gte=message_ID).filter(id__lt=message_ID_end).filter(channel_id=channel).filter(action='message').select_related('users')
+
+def doesUserExist(username=None):
+    if Users.objects.filter(user=username):
+        return True
+    else:
+        return False
+
+
+def getFirstAndLastSeen(channelName, username=None):
+
+    firstSeen = getUserFirstSeen(channelName, username)
+    lastSeen = getUserLastSeen(channelName, username)
+    username = firstSeen.user.user
+
+    # Get the last 3 messages including the last seen
+    firstSeen.id = firstSeen.id - 2
+    lastSeen.id = lastSeen.id - 2
+    firstSeenConvo = getConvoPartialFromID(channelName, firstSeen.id, 5)
+    for item in firstSeenConvo:
+        if item.user.user == username:
+            item.isUser = 'user'
+        else:
+            item.isUser = ''
+    lastSeenConvo  = getConvoPartialFromID(channelName, lastSeen.id, 5)
+    for item in lastSeenConvo:
+        if item.user.user == username:
+            item.isUser = 'user'
+        else:
+            item.isUser = ''
+
+    return (firstSeenConvo, lastSeenConvo)
+
+

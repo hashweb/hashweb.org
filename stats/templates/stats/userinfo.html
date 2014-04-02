@@ -19,20 +19,6 @@
             <img src="{% static 'img/logo.png' %}" class="logo" />
             <h1>Stats</h1>
             <p>The Most users in channel were: {{ mostFullTime.count }} on {{mostFullTime.timestamp}} {{ mostFullTime.timeSince.days }} days ago.. </p>
-            <h2>Users in the channel</h2>
-            <h3>Since January</h3>
-            <div class="fullCount"></div>
-
-            <h3>Past week</h3>
-            <div class="pastWeekCount"></div>
-
-            <h3>Past 24 hours</h3>
-            <div class="pastDayCount"></div>
-
-            <h3>Chatty Users</h3>
-            <label><input type="checkbox"> Sort values</label>
-            <div class="chattyUsers"></div>
-
             <div class="first-seen">
             <h3> First Seen </h3>
             {% for item in firstSeen %}
