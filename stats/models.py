@@ -187,3 +187,17 @@ def getFirstAndLastSeen(channelName, username=None):
     return (firstSeenConvo, lastSeenConvo)
 
 
+def getChannelTopic(channelName):
+    # select topic from user_count WHERE channel_id = 1 order by timestamp desc LIMIT 1;
+    channel = _getChannelID(channelName)
+    return UserCount.objects.filter(channel_id=channel).order_by('-timestamp')[0].topic
+
+def isUserOnline(username):
+    # select action from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' order by timestamp desc LIMIT 1;
+    result = Messages.objects.select_related('users').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
+    print result[0]
+    if result[0] == 'quit' or result[0] == 'part':
+        print 'user is offline'
+        return False 
+    else:
+        return True

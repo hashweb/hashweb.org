@@ -18,7 +18,10 @@
         <div class="container">
             <img src="{% static 'img/logo.png' %}" class="logo" />
             <h1>Stats</h1>
+            <span class="stat-title">Most Users</span>
             <p>The Most users in channel were: {{ mostFullTime.count }} on {{mostFullTime.timestamp}} {{ mostFullTime.timeSince.days }} days ago.. </p>
+            <span class="stat-title">Topic</span>
+            <p>The latest channel topic is: {{topic}}</p>
             <h2>Users in the channel</h2>
             <h3>Since January</h3>
             <div class="fullCount"></div>

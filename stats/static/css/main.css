@@ -43,3 +43,24 @@ path {
   min-width: 100px;
   padding: 30px;
 }
+
+.stat-title {
+  display: block;
+  font-weight: bold;
+}
+
+.online-or-offline-container span {
+  color: #fff
+}
+
+.online-or-offline-container .online {
+  background-color: green;
+}
+
+.online-or-offline-container.offline .online, .online-or-offline-container.online .offline {
+  background-color: grey;
+}
+
+.online-or-offline-container .offline {
+  background-color: red;
+}

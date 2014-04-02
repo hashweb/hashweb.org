@@ -17,8 +17,16 @@
     <body>
         <div class="container">
             <img src="{% static 'img/logo.png' %}" class="logo" />
-            <h1>Stats</h1>
+            <h1>Stats for {{username}}</h1>
             <p>The Most users in channel were: {{ mostFullTime.count }} on {{mostFullTime.timestamp}} {{ mostFullTime.timeSince.days }} days ago.. </p>
+            {% if isUserOnline %}
+            <div class="online-or-offline-container online">
+            {% else %}
+            <div class="online-or-offline-container offline">
+            {% endif %}
+            <span class='online'>Online</span>
+            <span class='offline'>Offline</span>
+            </div>
             <div class="first-seen">
             <h3> First Seen </h3>
             {% for item in firstSeen %}
