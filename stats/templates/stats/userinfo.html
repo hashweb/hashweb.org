@@ -18,7 +18,12 @@
         <div class="container">
             <img src="{% static 'img/logo.png' %}" class="logo" />
             <h1>Stats for {{username}}</h1>
-            <p>The Most users in channel were: {{ mostFullTime.count }} on {{mostFullTime.timestamp}} {{ mostFullTime.timeSince.days }} days ago.. </p>
+            <a href="{% url 'stats.views.index' 'web' %}">Return to stats</a>
+            {% if isUserOnline %}
+            <p>{{username}} is online, but hasn't spoken for {{notSeenFor.days|default:"0" }} days, {{notSeenFor.hours}} hours, {{notSeenFor.minutes}} minutes</p>
+            {% else %}
+            <p>{{username}} is offline, and hasn't been seen for {{notSeenFor.days|default:"0" }} days, {{notSeenFor.hours}} hours, {{notSeenFor.minutes}} minutes</p>
+            {% endif %}
             {% if isUserOnline %}
             <div class="online-or-offline-container online">
             {% else %}

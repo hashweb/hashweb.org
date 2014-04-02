@@ -9,6 +9,7 @@
 # into your database.
 from __future__ import unicode_literals
 import datetime
+from datetime import timedelta
 import json
 
 from django.db import models
@@ -150,6 +151,12 @@ def getUserFirstSeen(channelName, username):
     firstSeenObj = Messages.objects.filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('timestamp')[0]
     return firstSeenObj
 
+def lastSeenDelta(channelName, userName):
+    lastSeen = getUserLastSeen(channelName, userName)
+    notSeenFor = timezone.now() - lastSeen.timestamp
+    return notSeenFor
+
+
 def getConvoPartialFromID(channelName, message_ID, length):
     channel = _getChannelID(channelName)
     message_ID_end =  message_ID + length;
@@ -195,7 +202,6 @@ def getChannelTopic(channelName):
 def isUserOnline(username):
     # select action from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' order by timestamp desc LIMIT 1;
     result = Messages.objects.select_related('users').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
-    print result[0]
     if result[0] == 'quit' or result[0] == 'part':
         print 'user is offline'
         return False 

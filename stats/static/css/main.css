@@ -50,7 +50,8 @@ path {
 }
 
 .online-or-offline-container span {
-  color: #fff
+  color: #FFF;
+  padding: 3px;
 }
 
 .online-or-offline-container .online {
