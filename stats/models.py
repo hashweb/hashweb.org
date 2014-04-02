@@ -127,6 +127,16 @@ def getUserProfanity(channelName):
         resultSet.append({'user': i.user, 'noOfMessages': i.usercount})
     return resultSet
 
+def getLatestFiddles(channelName):
+    # select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id)
+    channel = _getChannelID(channelName)
+    collection = []
+    for i in Messages.objects.raw("select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s order by messages.timestamp desc LIMIT 5", [channel]):
+        collection.append({'fiddleLink': i.regexp_matches[0], 'user': i.user_id, 'timestamp': i.timestamp})
+    return collection
+
+
+
 def getMostFullTime(channelName):
     # select count, timestamp from user_count WHERE channel_id = 1 order by count desc LIMIT 1;
     channel = _getChannelID(channelName)

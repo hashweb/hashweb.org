@@ -9,7 +9,8 @@ def index(request, channelName):
 	# fullUserCount = models.getFullUserCount(channelName)
 	mostFullTime = __getMostFullTime(channelName)
 	topic = models.getChannelTopic(channelName)
-	return render(request, 'stats/index.html', {'mostFullTime': mostFullTime, 'topic': topic})
+	fiddles = models.getLatestFiddles(channelName)
+	return render(request, 'stats/index.html', locals())
 
 def getUserInfo(request, channelName, username):
 	channelName = '#' + channelName

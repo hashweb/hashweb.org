@@ -22,6 +22,15 @@
             <p>The Most users in channel were: {{ mostFullTime.count }} on {{mostFullTime.timestamp}} {{ mostFullTime.timeSince.days }} days ago.. </p>
             <span class="stat-title">Topic</span>
             <p>The latest channel topic is: {{topic}}</p>
+            <span class="stat-title">Latest JSFiddles</span>
+            <div class="cf">
+                <img src="{% static 'img/jsfiddle-logo.png' %}" class="js-fiddle-logo" />
+                <ul class="jsfiddles-list">
+                {% for fiddle in fiddles %}
+                    <li><a href="{{fiddle.fiddleLink}}">{{fiddle.fiddleLink}}</a> posted by <strong>{{fiddle.user}}</strong> on {{fiddle.timestamp}}</li>
+                {% endfor %}
+                </ul>
+            </div>
             <h2>Users in the channel</h2>
             <h3>Since January</h3>
             <div class="fullCount"></div>
@@ -35,28 +44,6 @@
             <h3>Chatty Users</h3>
             <label><input type="checkbox"> Sort values</label>
             <div class="chattyUsers"></div>
-
-            <div class="first-seen">
-            <h3> First Seen </h3>
-            {% for item in firstSeen %}
-                <div class="seen-table {{item.isUser}}">
-                    <span class="seen-table-timestamp">{{item.timestamp}}</span>
-                    <span class='seen-table-user'>&#60;{{item.user.user}}&gt;</span>
-                    <span class="seen-table-content">{{item.content}}</span>
-                </div>
-            {% endfor %}
-            </div>
-
-            <div class="last-seen">
-            <h3> Last Seen </h3>
-            {% for item in lastSeen %}
-                <div class="seen-table {{item.isUser}}">
-                    <span class="seen-table-timestamp {{item.isUser}}">{{item.timestamp}}</span>
-                    <span class='seen-table-user'>&#60;{{item.user.user}}&gt;</span>
-                    <span class="seen-table-content">{{item.content}}</span>
-                </div>
-            {% endfor %}
-            </div>
             <!--[if lt IE 8]>
                 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
             <![endif]-->
