@@ -19,6 +19,7 @@ def getUserInfo(request, channelName, username):
 	firstSeen = firstAndLastSeenConvo[0]
 	lastSeen = firstAndLastSeenConvo[1]
 	isUserOnline = models.isUserOnline(username)
+	userMessageCountOverall = models.userMessageCountOverall(channelName, username)
 	
 	# Get the last time the user was seen
 	notSeenFor = {}
@@ -28,6 +29,7 @@ def getUserInfo(request, channelName, username):
 	notSeenFor['seconds'] = notSeenFor['seconds'] - (notSeenFor['hours'] * 3600)
 	notSeenFor['minutes'] = notSeenFor['seconds'] // 60
 	notSeenFor['seconds'] = (notSeenFor['minutes'] * 60)
+	username = models.getNormalizedUserName(username)
 	return render(request, 'stats/userinfo.html', locals())
 
 

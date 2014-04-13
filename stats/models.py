@@ -14,8 +14,10 @@ import json
 
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.core.cache import cache
 
+@python_2_unicode_compatible
 class Channels(models.Model):
     id = models.IntegerField(primary_key=True)
     channel_name = models.CharField(max_length=100)
@@ -23,6 +25,8 @@ class Channels(models.Model):
         managed = False
         db_table = 'channels'
 
+    def __str__(self):
+        return self.channel_name
 
 class Messages(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -35,6 +39,7 @@ class Messages(models.Model):
         managed = False
         db_table = 'messages'
 
+@python_2_unicode_compatible
 class UserCount(models.Model):
     id = models.IntegerField(primary_key=True)
     count = models.IntegerField()
@@ -45,6 +50,10 @@ class UserCount(models.Model):
         managed = False
         db_table = 'user_count'
 
+    def __str__(self):
+        return self.count
+
+@python_2_unicode_compatible
 class Users(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     user = models.TextField(blank=True)
@@ -53,6 +62,9 @@ class Users(models.Model):
     class Meta:
         managed = False
         db_table = 'users'
+
+    def __str__(self):
+        return self.user
 
 
 def _getChannelID(channelName):
@@ -217,3 +229,17 @@ def isUserOnline(username):
         return False 
     else:
         return True
+
+def getAverageMessagesPerDay(channelName, username):
+    # select avg(count) from (select timestamp, count(*) from (select users.user, timestamp::date, count(*) from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' AND action = 'message' group by messages.timestamp, messages.content, users.user) as foo group by foo.timestamp order by count desc) as lol;
+    pass
+
+# This method provides a good way of knowing if a user has spoken or not, if the returned result is 0, we have an existing user, who has never spoken, (lurker)
+def userMessageCountOverall(channelName, username):
+    channel = _getChannelID(channelName)
+    return len(Messages.objects.filter(user__user=username, channel_id=channel))
+
+# Bring back capital letters
+# This can be cached
+def getNormalizedUserName(username):
+    return Users.objects.filter(user__iexact=username)[0].user
