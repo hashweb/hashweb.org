@@ -14,6 +14,7 @@ def index(request, channelName):
 
 def getUserInfo(request, channelName, username):
 	channelName = '#' + channelName
+	username = models.getNormalizedUserName(username)
 	mostFullTime = __getMostFullTime(channelName)
 	firstAndLastSeenConvo = models.getFirstAndLastSeen(channelName, username)
 	firstSeen = firstAndLastSeenConvo[0]
@@ -29,7 +30,6 @@ def getUserInfo(request, channelName, username):
 	notSeenFor['seconds'] = notSeenFor['seconds'] - (notSeenFor['hours'] * 3600)
 	notSeenFor['minutes'] = notSeenFor['seconds'] // 60
 	notSeenFor['seconds'] = (notSeenFor['minutes'] * 60)
-	username = models.getNormalizedUserName(username)
 	return render(request, 'stats/userinfo.html', locals())
 
 

@@ -43,10 +43,15 @@ userPass = data['db']['password']
 # libpq-dev and python-dev needs to be installed for psycopg2
 # ipython notebook for a better shell
 subprocess.call(['apt-get', 'update'])
-subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip', 'git', 'ipython-notebook', 'memcached', 'htop'])
+#'libjpeg8', 'libjpeg-dev', 'libpng', 'libpng-dev' are for Django-wiki (pip) / http://django-wiki.readthedocs.org/en/latest/installation.html
+subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip', 'git', 'ipython-notebook', 'memcached', 'htop', 'libjpeg8', 'libjpeg-dev', 'libpng12-0', 'libpng12-dev'])
 subprocess.call(['pip', 'install', 'psycopg2'])
 subprocess.call(['pip', 'install', 'django'])
 subprocess.call(['pip', 'install', 'python-memcached'])
+subprocess.call(['pip', 'install', 'django-subdomains']) # Seperate logs, wiki and main site
+subprocess.call(['pip', 'install', 'Pillow']) # for django-wiki
+subprocess.call(['pip', 'install', 'wiki'])
+
 
 # Get Limnoria & install it
 os.chdir('../');
