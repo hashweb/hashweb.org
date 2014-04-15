@@ -75,8 +75,8 @@ def _getChannelID(channelName):
         channelID = cache.get('getChannelID_' + channelName)
         return channelID
     else:
-        if len(Channels.objects.filter(channel_name=channelName)):
-            channelID = Channels.objects.filter(channel_name=channelName)[0].id
+        if len(Channels.objects.using('stats').filter(channel_name=channelName)):
+            channelID = Channels.objects.using('stats').filter(channel_name=channelName)[0].id
             # ChannelIDs are never going to change, so give them a long cache time, 1 day should do
             cache.set('getChannelID_' + channelName, channelID, 86400)
             return channelID
@@ -93,14 +93,14 @@ def getFullUserCount(channelName, timefrom=False, timeto=False):
     results = []
     if (channel):
         if (timefrom):
-            for i in UserCount.objects.filter(channel_id=channel, timestamp__gte=timefrom).order_by('-timestamp'):
+            for i in UserCount.objects.using('stats').filter(channel_id=channel, timestamp__gte=timefrom).order_by('-timestamp'):
                 results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
         else:
             # Full user count, look in the cache
             if cache.get('getFullUserCount'):
                 results = cache.get('getFullUserCount')
             else:
-                for i in UserCount.objects.filter(channel_id=channel).order_by('-timestamp'):
+                for i in UserCount.objects.using('stats').filter(channel_id=channel).order_by('-timestamp'):
                     results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
                 #cache the result because its heavy
                 cache.set('getFullUserCount', results, 3600)
@@ -120,7 +120,7 @@ def getFullUserCountWeek(channelName):
 def getChattyUsers(channelName):
     # Warning, this does not filter by channel, default #web
     if (cache.get('getChattyUsers') is None):
-        result = Users.objects.values('user').annotate(noOfMessages=models.Count('messages')).values_list('user', 'noOfMessages').order_by('-noOfMessages')[:60]
+        result = Users.objects.using('stats').values('user').annotate(noOfMessages=models.Count('messages')).values_list('user', 'noOfMessages').order_by('-noOfMessages')[:60]
         result = list(result)
         resultSet = []
         for i in result:
@@ -135,7 +135,7 @@ def getUserProfanity(channelName):
     # select users.user, count(users.user) as userCount from messages inner join users on (messages.user = users.id) where to_tsvector('english', content) @@ to_tsquery('english', 'fuck') group by  users.user order by userCount desc;
 
     resultSet = []
-    for i in Users.objects.raw("select users.user, users.id, count(users.user) as userCount from messages inner join users on (messages.user = users.id) where to_tsvector('english', content) @@ to_tsquery('english', 'fuck') group by  users.user, users.id order by userCount desc LIMIT 20;"):
+    for i in Users.objects.using('stats').raw("select users.user, users.id, count(users.user) as userCount from messages inner join users on (messages.user = users.id) where to_tsvector('english', content) @@ to_tsquery('english', 'fuck') group by  users.user, users.id order by userCount desc LIMIT 20;"):
         resultSet.append({'user': i.user, 'noOfMessages': i.usercount})
     return resultSet
 
@@ -143,7 +143,7 @@ def getLatestFiddles(channelName):
     # select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id)
     channel = _getChannelID(channelName)
     collection = []
-    for i in Messages.objects.raw("select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s order by messages.timestamp desc LIMIT 5", [channel]):
+    for i in Messages.objects.raw("select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s order by messages.timestamp desc LIMIT 5", [channel]).using('stats'):
         collection.append({'fiddleLink': i.regexp_matches[0], 'user': i.user_id, 'timestamp': i.timestamp})
     return collection
 
@@ -153,7 +153,7 @@ def getMostFullTime(channelName):
     # select count, timestamp from user_count WHERE channel_id = 1 order by count desc LIMIT 1;
     channel = _getChannelID(channelName)
     result = {}
-    mostFullTime = UserCount.objects.filter(channel_id=channel).order_by('-count').values_list('count', 'timestamp')[0]
+    mostFullTime = UserCount.objects.using('stats').filter(channel_id=channel).order_by('-count').values_list('count', 'timestamp')[0]
     result['count'] = mostFullTime[0]
     result['timestamp'] = mostFullTime[1]
     result['timeSince'] = timezone.now() - mostFullTime[1]
@@ -163,14 +163,14 @@ def getMostFullTime(channelName):
 def getUserLastSeen(channelName, username):
     # select * from users inner join messages on (users.id = messages.user) where users.user = 'Jayflux' AND action = 'message' AND channel_id = 1 order by timestamp asc LIMIT 1;
     channel = _getChannelID(channelName)
-    lastSeenObj = Messages.objects.filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('-timestamp')[0]
+    lastSeenObj = Messages.objects.using('stats').filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('-timestamp')[0]
     return lastSeenObj
 
 def getUserFirstSeen(channelName, username):
     # reverse of last see
     # TODO: First seen could be cached for a long time as its data that won't change
     channel = _getChannelID(channelName)
-    firstSeenObj = Messages.objects.filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('timestamp')[0]
+    firstSeenObj = Messages.objects.using('stats').filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('timestamp')[0]
     return firstSeenObj
 
 def lastSeenDelta(channelName, userName):
@@ -182,7 +182,7 @@ def lastSeenDelta(channelName, userName):
 def getConvoPartialFromID(channelName, message_ID, length):
     channel = _getChannelID(channelName)
     message_ID_end =  message_ID + length;
-    return Messages.objects.filter(id__gte=message_ID).filter(id__lt=message_ID_end).filter(channel_id=channel).filter(action='message').select_related('users')
+    return Messages.objects.using('stats').filter(id__gte=message_ID).filter(id__lt=message_ID_end).filter(channel_id=channel).filter(action='message').select_related('users')
 
 def doesUserExist(username=None):
     if Users.objects.filter(user=username):
@@ -219,11 +219,11 @@ def getFirstAndLastSeen(channelName, username=None):
 def getChannelTopic(channelName):
     # select topic from user_count WHERE channel_id = 1 order by timestamp desc LIMIT 1;
     channel = _getChannelID(channelName)
-    return UserCount.objects.filter(channel_id=channel).order_by('-timestamp')[0].topic
+    return UserCount.objects.using('stats').filter(channel_id=channel).order_by('-timestamp')[0].topic
 
 def isUserOnline(username):
     # select action from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' order by timestamp desc LIMIT 1;
-    result = Messages.objects.select_related('users').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
+    result = Messages.objects.using('stats').select_related('users').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
     if result[0] == 'quit' or result[0] == 'part':
         print 'user is offline'
         return False 
@@ -237,9 +237,9 @@ def getAverageMessagesPerDay(channelName, username):
 # This method provides a good way of knowing if a user has spoken or not, if the returned result is 0, we have an existing user, who has never spoken, (lurker)
 def userMessageCountOverall(channelName, username):
     channel = _getChannelID(channelName)
-    return len(Messages.objects.filter(user__user=username, channel_id=channel))
+    return len(Messages.objects.using('stats').filter(user__user=username, channel_id=channel))
 
 # Bring back capital letters
 # This can be cached
 def getNormalizedUserName(username):
-    return Users.objects.filter(user__iexact=username)[0].user
+    return Users.objects.using('stats').filter(user__iexact=username)[0].user
