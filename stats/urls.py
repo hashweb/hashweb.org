@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^(\w*)/getfullusercountweek', 'stats.views.getFullUserCountWeek'),
     url(r'^(\w*)/getfullusercounttoday', 'stats.views.getFullUserCountToday'),
     url(r'^(\w*)/getfullusercount', 'stats.views.getFullUserCount'),
+    url(r'^(\w*)/getusertimeonline/(\w*)$', 'stats.views.getUserTimeOnline'),
     url(r'^(\w*)/', 'stats.views.index'),
     # url(r'^blog/', include('blog.urls')),
 

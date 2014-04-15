@@ -80,6 +80,19 @@ path {
   margin-bottom: 7px;
 }
 
+.user-total-messages {
+  font-size: 50px;
+}
+
+.more-stats {
+  float: left;
+  margin-right: 90px;
+}
+
+.time-online {
+  float:left;
+}
+
 /**
  * For modern browsers
  * 1. The space content is one way to avoid an Opera bug when the

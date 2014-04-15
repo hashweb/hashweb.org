@@ -56,3 +56,7 @@ def getChattyUsers(request, channelName):
 def __getMostFullTime(channelName):
 	mostFullTime = models.getMostFullTime(channelName)
 	return mostFullTime
+
+def getUserTimeOnline(request, channelName, userName):
+	channelName = '#' + channelName
+	return HttpResponse(json.dumps(models.getUserTimeOnline(channelName, userName)), content_type="application/json")

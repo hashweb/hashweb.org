@@ -14,6 +14,7 @@ import json
 
 from django.db import models
 from django.utils import timezone
+from django.db import connections
 from django.utils.encoding import python_2_unicode_compatible
 from django.core.cache import cache
 
@@ -237,9 +238,28 @@ def getAverageMessagesPerDay(channelName, username):
 # This method provides a good way of knowing if a user has spoken or not, if the returned result is 0, we have an existing user, who has never spoken, (lurker)
 def userMessageCountOverall(channelName, username):
     channel = _getChannelID(channelName)
-    return len(Messages.objects.using('stats').filter(user__user=username, channel_id=channel))
+    return len(Messages.objects.using('stats').filter(user__user=username, channel_id=channel, action='message'))
 
 # Bring back capital letters
 # This can be cached
 def getNormalizedUserName(username):
     return Users.objects.using('stats').filter(user__iexact=username)[0].user
+
+def getUserTimeOnline(channelName, username):
+    # Django 1.6 cannot aggregate by date or extract hours from timestamps easily (coming in 1.7), so until then I need to do a raw query
+    # TODO: not namespaced by channel
+    if (cache.get('getUserTimeOnline__' + username) is None):
+        overallCount = userMessageCountOverall(channelName, username)
+        results = []
+        cursor = connections['stats'].cursor()
+        cursor.execute("select date_part, count(date_part) from (select extract(hour from timestamp) AS date_part, content from messages inner join users on (users.id = messages.user) WHERE users.user = %s AND action = 'message') as foo group by date_part order by date_part;", [username])
+        for i in cursor.fetchall():
+            # Get percentage
+            perc = (float(i[1]) / overallCount) * 100
+            perc = round(perc, 2)
+            results.append({'time': int(i[0]), 'hours': i[1], 'perc': perc})
+
+        cache.set('getUserTimeOnline__' + username, results, 300)
+        return results
+    else:
+        return cache.get('getUserTimeOnline__' + username)
