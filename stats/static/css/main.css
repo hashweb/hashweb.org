@@ -22,6 +22,16 @@ path {
   fill-opacity: .9;
 }
 
+.main-heading {
+  background-color: #222;
+  height: 40px;
+  padding: 0 30px;
+}
+
+.site-title {
+  color: #fff;
+}
+
 .container {
 	padding: 30px;
 }

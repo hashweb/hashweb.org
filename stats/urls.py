@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^(\w*)/getfullusercount', 'stats.views.getFullUserCount'),
     url(r'^(\w*)/getusertimeonline/(\w*)$', 'stats.views.getUserTimeOnline'),
     url(r'^(\w*)/', 'stats.views.index'),
+    url(r'', 'stats.views.landing'),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),

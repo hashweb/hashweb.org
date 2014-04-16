@@ -2,8 +2,14 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse
 from stats import models
+from django.shortcuts import redirect
 
 # Create your views here.
+
+
+def landing(request):
+	return redirect('/web/', permanent=True)
+
 def index(request, channelName):
 	channelName = '#' + channelName
 	# fullUserCount = models.getFullUserCount(channelName)
