@@ -13,7 +13,7 @@
             <img src="{% static 'img/jsfiddle-logo.png' %}" class="js-fiddle-logo" />
             <ul class="jsfiddles-list">
             {% for fiddle in fiddles %}
-                <li><a href="{{fiddle.fiddleLink}}">{{fiddle.fiddleLink}}</a> posted by <strong>{{fiddle.user}}</strong> on {{fiddle.timestamp}}</li>
+                <li><a href="{{fiddle.fiddleLink}}">{{fiddle.fiddleLink}}</a> posted by <strong><a href="{% url 'stats.views.getUserInfo' channelNameHash fiddle.user %}">{{fiddle.user}}</a></strong> on {{fiddle.timestamp}}</li>
             {% endfor %}
             </ul>
         </div>

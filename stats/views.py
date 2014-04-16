@@ -11,6 +11,7 @@ def landing(request):
 	return redirect('/web/', permanent=True)
 
 def index(request, channelName):
+	channelNameHash = channelName
 	channelName = '#' + channelName
 	# fullUserCount = models.getFullUserCount(channelName)
 	mostFullTime = __getMostFullTime(channelName)
