@@ -75,7 +75,7 @@ subprocess.call(['wget', 'http://logs.hashweb.org/dev/logs_stats.sql'])
 
 #Start up memcached
 print 'Starting up Memcached....'
-subprocess.call(['memcached', '-d', '-s', '/tmp.memcached.sock'])
+subprocess.call(['memcached', '-d', '-s', '/tmp/memcached.sock'])
 
 # Creating a new user is a pain, so just let sandboxed users use the postgres user
 # os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD \'%s\';" | sudo -u postgres psql' % (userName, userPass))

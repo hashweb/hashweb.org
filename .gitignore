@@ -4,6 +4,7 @@ settings.py
 hashweb.wsgi
 hashweb/uwsgi_params
 hashweb_uwsgi.ini
+hashweb/fixtures
 .vagrant*
 *~
 config.json

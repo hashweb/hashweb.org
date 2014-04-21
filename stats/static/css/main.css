@@ -24,7 +24,6 @@ path {
 
 .main-heading {
   background-color: #222;
-  height: 40px;
   padding: 0 30px;
 }
 
@@ -34,6 +33,7 @@ path {
 
 .container {
 	padding: 30px;
+  padding-top: 10px;
 }
 
 .logo {

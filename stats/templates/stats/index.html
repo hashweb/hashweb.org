@@ -2,8 +2,9 @@
 {% load staticfiles %}
 {% block content %}
     <div class="container">
-        <img src="{% static 'img/logo.png' %}" class="logo" />
         <h1>Stats</h1>
+        <span class="stat-title">Total Messages: </span>
+        <p>{{totalMessagesFromChannel}}</p>
         <span class="stat-title">Most Users</span>
         <p>The Most users in channel were: {{ mostFullTime.count }} on {{mostFullTime.timestamp}} {{ mostFullTime.timeSince.days }} days ago.. </p>
         <span class="stat-title">Topic</span>
@@ -13,7 +14,7 @@
             <img src="{% static 'img/jsfiddle-logo.png' %}" class="js-fiddle-logo" />
             <ul class="jsfiddles-list">
             {% for fiddle in fiddles %}
-                <li><a href="{{fiddle.fiddleLink}}">{{fiddle.fiddleLink}}</a> posted by <strong><a href="{% url 'stats.views.getUserInfo' channelNameHash fiddle.user %}">{{fiddle.user}}</a></strong> on {{fiddle.timestamp}}</li>
+                <li><a href="{{fiddle.fiddleLink}}" target="_blank">{{fiddle.fiddleLink}}</a> posted by <strong><a href="{% url 'stats.views.getUserInfo' channelNameHash fiddle.user %}">{{fiddle.user}}</a></strong> on {{fiddle.timestamp}}</li>
             {% endfor %}
             </ul>
         </div>

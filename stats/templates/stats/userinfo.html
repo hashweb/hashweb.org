@@ -3,7 +3,6 @@
 {% block title %} - {{username}}{% endblock %}
 {% block content %}
     <div class="container" data-user="{{username}}">
-        <img src="{% static 'img/logo.png' %}" class="logo" />
         <h1>Stats for {{username}}</h1>
         <a href="{% url 'stats.views.index' 'web' %}">Return to stats</a>
         {% if isUserOnline %}

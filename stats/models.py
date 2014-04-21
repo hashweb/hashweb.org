@@ -263,3 +263,12 @@ def getUserTimeOnline(channelName, username):
         return results
     else:
         return cache.get('getUserTimeOnline__' + username)
+
+# This is a slow query, so will need caching, start off with 1 hour
+def getTotalMessagesFromChannel(channelName):
+    if (cache.get('getTotalMessagesFromChannel_' + channelName)):
+        return cache.get('getTotalMessagesFromChannel_' + channelName)
+    else:
+        result = len(Messages.objects.using('stats').all())
+        cache.set('getTotalMessagesFromChannel_' + channelName, result, 60)
+        return result
