@@ -269,6 +269,6 @@ def getTotalMessagesFromChannel(channelName):
     if (cache.get('getTotalMessagesFromChannel_' + channelName)):
         return cache.get('getTotalMessagesFromChannel_' + channelName)
     else:
-        result = Messages.objects.using('stats').count()
+        result = Messages.objects.filter(action='message').using('stats').count()
         cache.set('getTotalMessagesFromChannel_' + channelName, result, 60)
         return result

@@ -2,5 +2,12 @@
 {% load staticfiles %}
 
 {% block wiki_header_branding %}
-<img src="{% static 'img/hashweb_logo.png' %}" alt="#web Logo" title="#Web" style="width: 150px;"/>
+<img src="{% static 'img/hashweb_logo.png' %}" alt="#web Logo" title="#Web" style="width: 150px; padding: 5px; float: left;"/>
+{% endblock %}
+
+{% block wiki_header_navlinks %}
+<ul class="nav navbar-nav">
+  <li class="active"><a href="{% url 'wiki:root' %}">Wiki</a></li>
+  <li class=""><a href="http://stats.hashweb.org/web">Stats</a></li>
+</ul>
 {% endblock %}
