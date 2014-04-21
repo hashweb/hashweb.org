@@ -50,7 +50,7 @@ subprocess.call(['pip', 'install', 'django'])
 subprocess.call(['pip', 'install', 'python-memcached'])
 subprocess.call(['pip', 'install', 'django-subdomains']) # Seperate logs, wiki and main site
 subprocess.call(['pip', 'install', 'Pillow']) # for django-wiki
-subprocess.call(['pip', 'install', 'wiki'])
+subprocess.call(['pip', 'install', 'git+https://github.com/benjaoming/django-wiki.git']) # The version from PIP seems outdated, use the master branch on github instead
 
 
 # Get Limnoria & install it
