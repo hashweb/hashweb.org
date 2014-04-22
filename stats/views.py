@@ -17,7 +17,7 @@ def index(request, channelName):
 	mostFullTime = __getMostFullTime(channelName)
 	topic = models.getChannelTopic(channelName)
 	fiddles = models.getLatestFiddles(channelName)
-	totalMessagesFromChannel = models.getTotalMessagesFromChannel(channelName)
+	totalMessagesFromChannel = '{0:,}'.format(models.getTotalMessagesFromChannel(channelName))
 	return render(request, 'stats/index.html', locals())
 
 def getUserInfo(request, channelName, username):
@@ -28,7 +28,7 @@ def getUserInfo(request, channelName, username):
 	firstSeen = firstAndLastSeenConvo[0]
 	lastSeen = firstAndLastSeenConvo[1]
 	isUserOnline = models.isUserOnline(username)
-	userMessageCountOverall = models.userMessageCountOverall(channelName, username)
+	userMessageCountOverall = '{0:,}'.format(models.userMessageCountOverall(channelName, username))
 	
 	# Get the last time the user was seen
 	notSeenFor = {}

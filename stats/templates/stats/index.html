@@ -36,3 +36,7 @@
         <![endif]-->
     </div>
 {% endblock %}
+
+{% block js %}
+    <script src="{% static 'vendor/requirejs/require.js' %}" data-main="{% static 'js/main' %}"></script>
+{% endblock %}

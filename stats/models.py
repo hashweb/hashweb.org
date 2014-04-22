@@ -248,7 +248,11 @@ def getNormalizedUserName(username):
 def getUserTimeOnline(channelName, username):
     # Django 1.6 cannot aggregate by date or extract hours from timestamps easily (coming in 1.7), so until then I need to do a raw query
     # TODO: not namespaced by channel
-    if (cache.get('getUserTimeOnline__' + username) is None):
+    if (cache.get('getUserTimeOnline__' + username)):
+        return cache.get('getUserTimeOnline__' + username)
+    else:
+        print 'not in cache'
+        print cache.get('getUserTimeOnline__' + username)
         overallCount = userMessageCountOverall(channelName, username)
         results = []
         cursor = connections['stats'].cursor()
@@ -261,8 +265,7 @@ def getUserTimeOnline(channelName, username):
 
         cache.set('getUserTimeOnline__' + username, results, 300)
         return results
-    else:
-        return cache.get('getUserTimeOnline__' + username)
+        
 
 # This is a slow query, so will need caching, start off with 1 hour
 def getTotalMessagesFromChannel(channelName):

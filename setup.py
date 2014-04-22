@@ -50,6 +50,7 @@ subprocess.call(['pip', 'install', 'django'])
 subprocess.call(['pip', 'install', 'python-memcached'])
 subprocess.call(['pip', 'install', 'django-subdomains']) # Seperate logs, wiki and main site
 subprocess.call(['pip', 'install', 'Pillow']) # for django-wiki
+subprocess.call(['pip', 'install', 'uwsgitop']) # Useful for monitering uwsgi processes
 subprocess.call(['pip', 'install', 'git+https://github.com/benjaoming/django-wiki.git']) # The version from PIP seems outdated, use the master branch on github instead
 
 
@@ -75,7 +76,7 @@ subprocess.call(['wget', 'http://logs.hashweb.org/dev/logs_stats.sql'])
 
 #Start up memcached
 print 'Starting up Memcached....'
-subprocess.call(['memcached', '-d', '-s', '/tmp/memcached.sock'])
+os.system('memcached -d -s /tmp/memcached.sock')
 
 # Creating a new user is a pain, so just let sandboxed users use the postgres user
 # os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD \'%s\';" | sudo -u postgres psql' % (userName, userPass))
