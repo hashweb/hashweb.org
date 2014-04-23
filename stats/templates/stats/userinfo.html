@@ -2,9 +2,9 @@
 {% load staticfiles %}
 {% block title %} - {{username}}{% endblock %}
 {% block content %}
-    <div class="container" data-user="{{username}}">
+    <div class="container page-wrap" data-user="{{username}}">
         <h1>Stats for {{username}}</h1>
-        <a href="{% url 'stats.views.index' 'web' %}">Return to stats</a>
+        <a class="return-to-stats" href="{% url 'stats.views.index' 'web' %}">Return to stats</a>
         {% if isUserOnline %}
         <p>{{username}} is online, but hasn't spoken for {{notSeenFor.days|default:"0" }} days, {{notSeenFor.hours}} hours, {{notSeenFor.minutes}} minutes</p>
         {% else %}
@@ -41,15 +41,30 @@
         </div>
 
         <div class="cf">
-            <div class="more-stats">
-            <p>Total messages..</p>
-            <p class="user-total-messages">{{userMessageCountOverall}}</p>
-            </div>
-
-            <div class="time-online">
-                <h4>Time of day spent online</h4>
-                {{getUserTimeOnline}}
-            </div>
+            <table class="table">
+                <tr>
+                    <th>Total Messages</th>
+                    <th>Time of day spend online</th>
+                    {% if fiddles %}
+                        <th>JSFiddles</th>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td><p class="user-total-messages">{{userMessageCountOverall}}</p></td>
+                    <td><div class="time-online"></div></td>
+                    {% if fiddles %}
+                        <td>
+                            <div class="cf">
+                                <ul class="jsfiddles-list">
+                                {% for fiddle in fiddles %}
+                                    <li><a href="{{fiddle.fiddleLink}}" target="_blank">{{fiddle.fiddleLink}}</a> posted on {{fiddle.timestamp}}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </td>
+                    {% endif %}
+                </tr>
+            </table>
         </div>
         <!--[if lt IE 8]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>

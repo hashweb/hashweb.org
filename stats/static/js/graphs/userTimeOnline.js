@@ -16,7 +16,7 @@ var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom");
 
-var user = $('.container').data('user');
+var user = $('.page-wrap').data('user');
 
 var svg = d3.select(".time-online").append("svg")
     .attr("width", width + margin.left + margin.right)

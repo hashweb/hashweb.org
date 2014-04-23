@@ -22,6 +22,16 @@ path {
   fill-opacity: .9;
 }
 
+.header-web-logo {
+  width: 150px;
+  margin: 10px 0;
+  float: left;
+}
+
+.last-seen {
+  margin-bottom: 16px;
+}
+
 .main-heading {
   background-color: #222;
   padding: 0 30px;
@@ -31,9 +41,19 @@ path {
   color: #fff;
 }
 
-.container {
-	padding: 30px;
-  padding-top: 10px;
+.return-to-stats {
+  background-color: #667EFF;
+  color: #FFF;
+  text-decoration: none;
+  margin-bottom: 5px;
+  display: inline-block;
+  padding: 5px;
+}
+
+.return-to-stats::before {
+  content: '<';
+  margin-right: 6px;
+  font-weight: bold;
 }
 
 .logo {
@@ -48,6 +68,10 @@ path {
 }
 .seen-table.user {
   background-color: rgba(0, 128, 0, 0.2);
+}
+
+.user-link {
+  text-decoration: underline;
 }
 
 .seen-table.user::before{
@@ -67,7 +91,7 @@ path {
 
 .online-or-offline-container span {
   color: #FFF;
-  padding: 3px;
+  padding: 7px;
 }
 
 .online-or-offline-container .online {
@@ -84,6 +108,10 @@ path {
 
 .jsfiddles-list {
   list-style: none;
+}
+
+table .jsfiddles-list {
+  padding-left: 0;
 }
 
 .jsfiddles-list li {

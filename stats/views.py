@@ -1,8 +1,11 @@
 import json
+import urllib
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from stats import models
 from django.shortcuts import redirect
+from django.views.decorators.cache import cache_page
 
 # Create your views here.
 
@@ -10,6 +13,7 @@ from django.shortcuts import redirect
 def landing(request):
 	return redirect('/web/', permanent=True)
 
+@cache_page(60 * 5)
 def index(request, channelName):
 	channelNameHash = channelName
 	channelName = '#' + channelName
@@ -20,6 +24,7 @@ def index(request, channelName):
 	totalMessagesFromChannel = '{0:,}'.format(models.getTotalMessagesFromChannel(channelName))
 	return render(request, 'stats/index.html', locals())
 
+@cache_page(60 * 2)
 def getUserInfo(request, channelName, username):
 	channelName = '#' + channelName
 	username = models.getNormalizedUserName(username)
@@ -29,6 +34,7 @@ def getUserInfo(request, channelName, username):
 	lastSeen = firstAndLastSeenConvo[1]
 	isUserOnline = models.isUserOnline(username)
 	userMessageCountOverall = '{0:,}'.format(models.userMessageCountOverall(channelName, username))
+	fiddles = models.getLatestFiddles(channelName, username)
 	
 	# Get the last time the user was seen
 	notSeenFor = {}
@@ -67,4 +73,5 @@ def __getMostFullTime(channelName):
 
 def getUserTimeOnline(request, channelName, userName):
 	channelName = '#' + channelName
+	userName = urllib.unquote(userName)
 	return HttpResponse(json.dumps(models.getUserTimeOnline(channelName, userName)), content_type="application/json")

@@ -140,11 +140,21 @@ def getUserProfanity(channelName):
         resultSet.append({'user': i.user, 'noOfMessages': i.usercount})
     return resultSet
 
-def getLatestFiddles(channelName):
-    # select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id)
+def getLatestFiddles(channelName, userName = None):
+    """
+    Second argument is optional, if only first option is passed, then it will check fiddles across the whole channel
+    """
+
     channel = _getChannelID(channelName)
+    if userName is None:
+        query = "select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s order by messages.timestamp desc LIMIT 5"
+        arguments = [channel]
+    else:
+        query = "select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s AND users.user = %s order by messages.timestamp desc LIMIT 5"
+        arguments = [channel, userName]
+
     collection = []
-    for i in Messages.objects.raw("select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s order by messages.timestamp desc LIMIT 5", [channel]).using('stats'):
+    for i in Messages.objects.raw(query, arguments).using('stats'):
         collection.append({'fiddleLink': i.regexp_matches[0], 'user': i.user_id, 'timestamp': i.timestamp})
     return collection
 
@@ -251,8 +261,6 @@ def getUserTimeOnline(channelName, username):
     if (cache.get('getUserTimeOnline__' + username)):
         return cache.get('getUserTimeOnline__' + username)
     else:
-        print 'not in cache'
-        print cache.get('getUserTimeOnline__' + username)
         overallCount = userMessageCountOverall(channelName, username)
         results = []
         cursor = connections['stats'].cursor()
