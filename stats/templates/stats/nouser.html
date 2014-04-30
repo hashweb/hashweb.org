@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %} - {{username}}{% endblock %}
+{% block content %}
+    <div class="container page-wrap" data-user="{{username}}">
+        <h1>Stats for {{username}}</h1>
+        <h2>Ooops, looks like {{username}} has no stats!</h2>
+        <a class="return-to-stats" href="{% url 'stats.views.index' 'web' %}">Return to stats</a>
+        <!--[if lt IE 8]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'vendor/requirejs/require.js' %}" data-main="{% static 'js/modules/userinfo' %}"></script>
+{% endblock %}

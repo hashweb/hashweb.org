@@ -7,6 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
+    url(r'^(\w*)/search', 'stats.views.search'),
     url(r'^(\w*)/users/(.*)', 'stats.views.getUserInfo'),
     url(r'^(\w*)/getchattyusers', 'stats.views.getChattyUsers'),
     url(r'^(\w*)/getfullusercountweek', 'stats.views.getFullUserCountWeek'),

@@ -36,6 +36,7 @@ class Messages(models.Model):
     action = models.TextField(blank=True) # This field type is a guess.
     timestamp = models.DateTimeField(blank=True, null=True)
     channel_id = models.ForeignKey('Channels', db_column='channel_id')
+
     class Meta:
         managed = False
         db_table = 'messages'
@@ -196,7 +197,13 @@ def getConvoPartialFromID(channelName, message_ID, length):
     return Messages.objects.using('stats').filter(id__gte=message_ID).filter(id__lt=message_ID_end).filter(channel_id=channel).filter(action='message').select_related('users')
 
 def doesUserExist(username=None):
-    if Users.objects.filter(user=username):
+    if Users.objects.using('stats').filter(user=username):
+        return True
+    else:
+        return False
+
+def hasUserSpoken(username=None):
+    if Messages.objects.using('stats').filter(user__user=username):
         return True
     else:
         return False
@@ -283,3 +290,16 @@ def getTotalMessagesFromChannel(channelName):
         result = Messages.objects.filter(action='message').using('stats').count()
         cache.set('getTotalMessagesFromChannel_' + channelName, result, 60)
         return result
+
+def search(channelName, query):
+    # Cache keys cannot have spaces in them
+    if cache.get('search_' + query.replace(' ', '')):
+        return cache.get('search_' + query)
+    else:
+        channel = _getChannelID(channelName)
+        results = []
+        for i in Messages.objects.filter(channel_id=1, content__icontains=query).order_by('-timestamp')[:20]:
+            results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
+
+        cache.set('search_' + query.replace(' ', ''), results, 10)
+        return results

@@ -14,3 +14,5 @@ config.json
 hashweb/static/vendor/*
 # markdown preview for sublime text generates readme.html files
 README.html
+
+node_modules

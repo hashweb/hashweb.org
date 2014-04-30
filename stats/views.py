@@ -6,14 +6,16 @@ from django.http import HttpResponse
 from stats import models
 from django.shortcuts import redirect
 from django.views.decorators.cache import cache_page
+from django import forms
 
 # Create your views here.
+
 
 
 def landing(request):
 	return redirect('/web/', permanent=True)
 
-@cache_page(60 * 5)
+# @cache_page(60 * 5)
 def index(request, channelName):
 	channelNameHash = channelName
 	channelName = '#' + channelName
@@ -24,9 +26,14 @@ def index(request, channelName):
 	totalMessagesFromChannel = '{0:,}'.format(models.getTotalMessagesFromChannel(channelName))
 	return render(request, 'stats/index.html', locals())
 
-@cache_page(60 * 2)
+# @cache_page(60 * 2)
 def getUserInfo(request, channelName, username):
 	channelName = '#' + channelName
+	# This user does not exist in the database
+	if (models.hasUserSpoken(username) == False):
+		#render a 'cannot find user' page
+		return render(request, 'stats/nouser.html', locals())
+
 	username = models.getNormalizedUserName(username)
 	mostFullTime = __getMostFullTime(channelName)
 	firstAndLastSeenConvo = models.getFirstAndLastSeen(channelName, username)
@@ -45,6 +52,18 @@ def getUserInfo(request, channelName, username):
 	notSeenFor['minutes'] = notSeenFor['seconds'] // 60
 	notSeenFor['seconds'] = (notSeenFor['minutes'] * 60)
 	return render(request, 'stats/userinfo.html', locals())
+
+class SearchForm(forms.Form):
+	q = forms.CharField(max_length=50)
+
+def search(request, channelName):
+	if request.method == 'POST':
+		form = SearchForm(request.POST)
+		if form.is_valid():
+			q = form.cleaned_data['q']
+			results = models.search(channelName, q)
+
+	return render(request, 'stats/searchLanding.html', locals())
 
 
 def getFullUserCount(request, channelName):

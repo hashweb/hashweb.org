@@ -1,8 +1,8 @@
 define(function() {
 
-var margin = {top: 20, right: 20, bottom: 60, left: 40},
-    width = 500 - margin.left - margin.right,
-    height = 200 - margin.top - margin.bottom;
+var margin = {top: 20, right: 20, bottom: 60, left: 60},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
 var formatPercent = d3.format(".0%");
 
@@ -16,22 +16,24 @@ var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom");
 
-var user = $('.page-wrap').data('user');
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
 
-var svg = d3.select(".time-online").append("svg")
+var svg = d3.select(".chattyUsers").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("/web/getusertimeonline/" + user, function(error, data) {
+d3.json("getchattyusers", function(error, data) {
 
 	  data.forEach(function(d) {
 	    d.frequency = +d.frequency;
 	  });
 
-	  x.domain(data.map(function(d) { return d.time; }));
-	  y.domain([0, d3.max(data, function(d) { return d.perc; })]);
+	  x.domain(data.map(function(d) { return d.user; }));
+	  y.domain([0, d3.max(data, function(d) { return d.noOfMessages; })]);
 
 	  svg.append("g")
 	      .attr("class", "x axis")
@@ -42,16 +44,26 @@ d3.json("/web/getusertimeonline/" + user, function(error, data) {
                 	return "rotate(-90)" 
                 })
 
+	  svg.append("g")
+	      .attr("class", "y axis")
+	      .call(yAxis)
+	    .append("text")
+	      .attr("transform", "rotate(-90)")
+	      .attr("y", 6)
+	      .attr("dy", ".71em")
+	      .style("text-anchor", "end")
+	      .text("No Of Messages");
+
 	  svg.selectAll(".bar")
 	      .data(data)
 	    .enter().append("rect")
 	      .attr("class", "bar")
-	      .attr("x", function(d) { return x(d.time); })
+	      .attr("x", function(d) { return x(d.user); })
 	      .attr("width", x.rangeBand())
-	      .attr("y", function(d) { return y(d.perc); })
-	      .attr("height", function(d) { return height - y(d.perc); })
+	      .attr("y", function(d) { return y(d.noOfMessages); })
+	      .attr("height", function(d) { return height - y(d.noOfMessages); })
 	    .append("svg:title")
-	    	.text(function(d, i) { return "Messages during this time is " + d.hours; })
+	    	.text(function(d, i) { return "Message count is " + d.noOfMessages; })
 
 	  d3.select("input").on("change", change);
 
@@ -64,9 +76,9 @@ d3.json("/web/getusertimeonline/" + user, function(error, data) {
 
 	    // Copy-on-write since tweens are evaluated after a delay.
 	    var x0 = x.domain(data.sort(this.checked
-	        ? function(a, b) { return b.perc - a.perc; }
-	        : function(a, b) { return d3.ascending(a.perc, b.perc); })
-	        .map(function(d) { return d.perc; }))
+	        ? function(a, b) { return b.noOfMessages - a.noOfMessages; }
+	        : function(a, b) { return d3.ascending(a.user, b.user); })
+	        .map(function(d) { return d.user; }))
 	        .copy();
 
 	    var transition = svg.transition().duration(750),
@@ -74,7 +86,7 @@ d3.json("/web/getusertimeonline/" + user, function(error, data) {
 
 	    transition.selectAll(".bar")
 	        .delay(delay)
-	        .attr("x", function(d) { return x0(d.perc); });
+	        .attr("x", function(d) { return x0(d.user); });
 
 	    transition.select(".x.axis")
 	        .call(xAxis)
