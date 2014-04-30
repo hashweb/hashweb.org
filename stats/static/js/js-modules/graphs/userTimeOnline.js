@@ -66,7 +66,7 @@ d3.json("/getusertimeonline/" + user, function(error, data) {
 	    var x0 = x.domain(data.sort(this.checked
 	        ? function(a, b) { return b.perc - a.perc; }
 	        : function(a, b) { return d3.ascending(a.perc, b.perc); })
-	        .map(function(d) { return d.perc; }))
+	        .map(function(d) { return d.time; }))
 	        .copy();
 
 	    var transition = svg.transition().duration(750),
@@ -74,7 +74,7 @@ d3.json("/getusertimeonline/" + user, function(error, data) {
 
 	    transition.selectAll(".bar")
 	        .delay(delay)
-	        .attr("x", function(d) { return x0(d.perc); });
+	        .attr("x", function(d) { return x0(d.time); });
 
 	    transition.select(".x.axis")
 	        .call(xAxis)

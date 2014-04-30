@@ -15,7 +15,7 @@
         		{% for item in results %}
         			<li data-ref="{{item.id}}">
         				<span class="search-timestamp">[{{item.timestamp}}]</span>
-        				<span class="search-user">&lt;{{item.user}}&gt;</span>
+        				<span class="search-user">&lt;<a href="{% url 'stats.views.getUserInfo' item.user %}">{{item.user}}&gt;</a></span>
         				<span class="search-content">{{item.content}}</span>
         			
         			</li>
