@@ -11,14 +11,10 @@ from django import forms
 # Create your views here.
 
 
-
-def landing(request):
-	return redirect('/web/', permanent=True)
-
 # @cache_page(60 * 5)
-def index(request, channelName):
-	channelNameHash = channelName
-	channelName = '#' + channelName
+def index(request):
+	channelNameHash = 'web'
+	channelName = '#' + 'web'
 	# fullUserCount = models.getFullUserCount(channelName)
 	mostFullTime = __getMostFullTime(channelName)
 	topic = models.getChannelTopic(channelName)
@@ -27,8 +23,8 @@ def index(request, channelName):
 	return render(request, 'stats/index.html', locals())
 
 # @cache_page(60 * 2)
-def getUserInfo(request, channelName, username):
-	channelName = '#' + channelName
+def getUserInfo(request, username):
+	channelName = '#' + 'web'
 	# This user does not exist in the database
 	if (models.hasUserSpoken(username) == False):
 		#render a 'cannot find user' page
@@ -56,33 +52,40 @@ def getUserInfo(request, channelName, username):
 class SearchForm(forms.Form):
 	q = forms.CharField(max_length=50)
 
-def search(request, channelName):
+def search(request):
 	if request.method == 'POST':
 		form = SearchForm(request.POST)
 		if form.is_valid():
 			q = form.cleaned_data['q']
-			results = models.search(channelName, q)
+			results = models.search('web', q)
 
 	return render(request, 'stats/searchLanding.html', locals())
 
+def getConvoPartial(request, id):
+	id = int(id)
+	id = id - 5;
+	results = models.getConvoPartialFromID('#web', id, 100)
+	id = id + 5;
+	return render(request, 'stats/log_convo.html', locals())
 
-def getFullUserCount(request, channelName):
-	channelName = '#' + channelName
+
+def getFullUserCount(request):
+	channelName = '#' + 'web'
 	fullUserCount = models.getFullUserCount(channelName)
 	return HttpResponse(json.dumps(fullUserCount), content_type="application/json")
 
-def getFullUserCountToday(request, channelName):
-	channelName = '#' + channelName
+def getFullUserCountToday(request):
+	channelName = '#' + 'web'
 	fullUserCount = models.getFullUserCountToday(channelName)
 	return HttpResponse(json.dumps(fullUserCount), content_type="application/json")
 
-def getFullUserCountWeek(request, channelName):
-	channelName = '#' + channelName
+def getFullUserCountWeek(request):
+	channelName = '#' + 'web'
 	fullUserCount = models.getFullUserCountWeek(channelName)
 	return HttpResponse(json.dumps(fullUserCount), content_type="application/json")
 
-def getChattyUsers(request, channelName):
-	channelName = '#' + channelName
+def getChattyUsers(request):
+	channelName = '#' + 'web'
 	chattyUsers = models.getChattyUsers(channelName)
 	return HttpResponse(json.dumps(chattyUsers), content_type="application/json")
 
@@ -90,7 +93,7 @@ def __getMostFullTime(channelName):
 	mostFullTime = models.getMostFullTime(channelName)
 	return mostFullTime
 
-def getUserTimeOnline(request, channelName, userName):
-	channelName = '#' + channelName
+def getUserTimeOnline(request, userName):
+	channelName = '#' + 'web'
 	userName = urllib.unquote(userName)
 	return HttpResponse(json.dumps(models.getUserTimeOnline(channelName, userName)), content_type="application/json")

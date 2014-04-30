@@ -16,9 +16,15 @@
         <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     </head>
     <body>
-    <header class="main-heading">
+    <header class="main-heading header-container">
       <div class="container">
         <img src="{% static 'img/hashweb_logo.png' %}" alt="#web Logo" class="header-web-logo" title="#Web" />
+
+        <form role="form" class="navbar-form" method="POST" action="/search">{% csrf_token %}
+          <div class="form-group">
+            <input type="text" maxlength="50" name="q" class="form-control" placeholder="Search Logs..">
+          </div>
+        </form>
       </div>
     </header>
 

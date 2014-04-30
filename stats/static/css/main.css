@@ -1,5 +1,5 @@
 body { 
-  font-size: 12px;
+/*  font-size: 12px;*/
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -22,6 +22,10 @@ path {
   fill-opacity: .9;
 }
 
+.header-container {
+  line-height: 48px;
+}
+
 .header-web-logo {
   width: 150px;
   margin: 10px 0;
@@ -37,6 +41,10 @@ path {
   padding: 0 30px;
 }
 
+
+.navbar-form {
+  float:right;
+}
 .site-title {
   color: #fff;
 }
@@ -129,6 +137,77 @@ table .jsfiddles-list {
 
 .time-online {
   float:left;
+}
+
+.chattyUsers {
+  font-size: 12px;
+}
+
+
+/** ====== Search ===== */
+
+.results-wrapper ul {
+  padding:0;
+  list-style: none;
+}
+
+.results-wrapper ul li{
+  margin-bottom: 8px;
+}
+
+.results-wrapper ul li.highlight {
+  -webkit-animation-duration: 1s;
+  -webkit-animation-name: highlight;
+  -moz-animation-duration: 1s;
+  -moz-animation-name: highlight;
+  -webkit-animation-direction: alternate;
+  -webkit-animation-iteration-count: 2;
+}
+
+@-webkit-keyframes highlight {
+  from {
+    background-color: transparent;
+  }
+
+  to {
+    background-color: #FFDD54;
+  }
+}
+
+@-moz-keyframes highlight {
+  from {
+    background-color: transparent;
+  }
+
+  to {
+    background-color: #FFDD54;
+  }
+}
+
+.results-wrapper ul li:nth-child(even) {
+  background-color: #eee;
+}
+
+.results-wrapper a {
+  text-decoration: none;
+  color: #333;
+}
+
+.results-wrapper a:hover {
+  text-decoration: underline;
+}
+
+.search-timestamp {
+
+}
+
+.search-user {
+
+  font-weight: bold;
+}
+
+.search-content {
+
 }
 
 /**

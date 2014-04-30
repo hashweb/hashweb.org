@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 import datetime
 from datetime import timedelta
 import json
+import re
 
 from django.db import models
 from django.utils import timezone
@@ -141,23 +142,59 @@ def getUserProfanity(channelName):
         resultSet.append({'user': i.user, 'noOfMessages': i.usercount})
     return resultSet
 
+# def getLatestFiddles(channelName, userName = None):
+#     """
+#     Second argument is optional, if only first option is passed, then it will check fiddles across the whole channel
+#     """
+
+#     # Messages.objects.filter(channel_id=1, content__contains='http://jsfiddle.net/').order_by('-timestamp')
+
+#     channel = _getChannelID(channelName)
+#     if userName is None:
+#         query = "select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s order by messages.timestamp desc LIMIT 5"
+#         arguments = [channel]
+#     else:
+#         query = "select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s AND users.user = %s order by messages.timestamp desc LIMIT 5"
+#         arguments = [channel, userName]
+
+#     collection = []
+#     for i in Messages.objects.raw(query, arguments).using('stats'):
+#         collection.append({'fiddleLink': i.regexp_matches[0], 'user': i.user_id, 'timestamp': i.timestamp})
+#     return collection
+
+
+
 def getLatestFiddles(channelName, userName = None):
     """
+    This is a large query which needs to cached
     Second argument is optional, if only first option is passed, then it will check fiddles across the whole channel
     """
-
     channel = _getChannelID(channelName)
-    if userName is None:
-        query = "select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s order by messages.timestamp desc LIMIT 5"
-        arguments = [channel]
-    else:
-        query = "select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s AND users.user = %s order by messages.timestamp desc LIMIT 5"
-        arguments = [channel, userName]
-
     collection = []
-    for i in Messages.objects.raw(query, arguments).using('stats'):
-        collection.append({'fiddleLink': i.regexp_matches[0], 'user': i.user_id, 'timestamp': i.timestamp})
+    if userName is None:
+        if (cache.get('latestFiddles') is None):
+            for i in Messages.objects.filter(channel_id=1, content__contains='http://jsfiddle.net/').order_by('-timestamp')[:5]:
+                if re.search('http://jsfiddle.net/[^\s]*', i.content):
+                    fiddleLink = re.search('http://jsfiddle.net/[^\s]*', i.content).group(0)
+                    collection.append({'fiddleLink': fiddleLink, 'user': i.user, 'timestamp': i.timestamp})
+
+            cache.set('latestFiddles', collection, 300)
+        else:
+            collection = cache.get('latestFiddles')
+
+    else:
+        if cache.get('latestFiddles_' + userName) is None:
+            for i in Messages.objects.filter(channel_id=1, content__contains='http://jsfiddle.net/', user__user=userName).order_by('-timestamp')[:5]:
+                if re.search('http://jsfiddle.net/[^\s]*', i.content):
+                    fiddleLink = re.search('http://jsfiddle.net/[^\s]*', i.content).group(0)
+                    collection.append({'fiddleLink': fiddleLink, 'user': i.user, 'timestamp': i.timestamp})
+            cache.set('latestFiddles_' + userName, collection, 300)
+        else:
+            collection = cache.get('latestFiddles_' + userName)
+
     return collection
+
+
 
 
 
@@ -243,7 +280,6 @@ def isUserOnline(username):
     # select action from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' order by timestamp desc LIMIT 1;
     result = Messages.objects.using('stats').select_related('users').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
     if result[0] == 'quit' or result[0] == 'part':
-        print 'user is offline'
         return False 
     else:
         return True

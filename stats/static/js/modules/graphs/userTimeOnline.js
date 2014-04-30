@@ -24,7 +24,7 @@ var svg = d3.select(".time-online").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("/web/getusertimeonline/" + user, function(error, data) {
+d3.json("/getusertimeonline/" + user, function(error, data) {
 
 	  data.forEach(function(d) {
 	    d.frequency = +d.frequency;
