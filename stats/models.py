@@ -240,7 +240,7 @@ def doesUserExist(username=None):
         return False
 
 def hasUserSpoken(username=None):
-    if Messages.objects.using('stats').filter(user__user=username):
+    if Messages.objects.using('stats').filter(user__user__iexact=username):
         return True
     else:
         return False

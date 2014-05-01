@@ -143,6 +143,11 @@ table .jsfiddles-list {
   font-size: 12px;
 }
 
+.user-online-text {
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
 
 /** ====== Search ===== */
 
