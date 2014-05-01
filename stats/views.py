@@ -58,9 +58,9 @@ def search(request):
 
 def getConvoPartial(request, id):
 	id = int(id)
-	id = id - 5;
+	id = id - 10;
 	results = models.getConvoPartialFromID('#web', id, 100)
-	id = id + 5;
+	id = id + 10;
 	return render(request, 'stats/log_convo.html', locals())
 
 
