@@ -5,32 +5,24 @@
         <meta charset="utf-8">
         <meta http-equiv="Content-Language" content="en-us" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>#Web - Stats{% block title %}{% endblock %}</title>
+        <title>Welcome to #Web</title>
         <meta name="description" content="#Web is a Freenode IRC Channel for General Web Development talk">
         <meta name="keyword" content="#web, hashweb, html, php, python, open-source, framework">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Place favicon.ico and apple-touch-icon(s) in the root directory -->
-
-        <!--<link rel="stylesheet" href="{% static 'vendor/html5-boilerplate/css/normalize.css' %}"> -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <link rel="stylesheet" href="{% static 'css/home.css' %}">
         <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     </head>
     <body>
-    <header class="main-heading header-container">
-      <div class="container">
-        <img src="{% static 'img/hashweb_logo.png' %}" alt="#web Logo" class="header-web-logo" title="#Web" />
 
-        <form role="form" class="navbar-form" method="GET" action="/search">
-          <div class="form-group">
-            <input type="text" maxlength="50" name="q" class="form-control" placeholder="Search Logs..">
-          </div>
-        </form>
-      </div>
-    </header>
-
-    {% block content %}{% endblock %}
+        <div class="landing-container">
+            <img class="hashweb-logo" alt="HashWeb Logo" src="{% static 'img/logo-large.png' %}" />
+            <nav>
+                <a href="http://stats.hashweb.org">STATS</a>
+                <span>|</span>
+                <a href="http://wiki.hashweb.org">WIKI</a>
+            </nav>
+        </div>
         
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

@@ -49,15 +49,10 @@ def getUserInfo(request, username):
 	notSeenFor['seconds'] = (notSeenFor['minutes'] * 60)
 	return render(request, 'stats/userinfo.html', locals())
 
-class SearchForm(forms.Form):
-	q = forms.CharField(max_length=50)
-
 def search(request):
-	if request.method == 'POST':
-		form = SearchForm(request.POST)
-		if form.is_valid():
-			q = form.cleaned_data['q']
-			results = models.search('web', q)
+	if request.method == 'GET':
+		q = request.GET['q']
+		results = models.search('web', q)
 
 	return render(request, 'stats/searchLanding.html', locals())
 
