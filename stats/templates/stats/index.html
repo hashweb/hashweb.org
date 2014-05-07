@@ -14,7 +14,7 @@
             <img src="{% static 'img/jsfiddle-logo.png' %}" class="js-fiddle-logo" />
             <ul class="jsfiddles-list">
             {% for fiddle in fiddles %}
-                <li><a href="{{fiddle.fiddleLink}}" target="_blank">{{fiddle.fiddleLink}}</a> posted by <strong><a class="user-link" title="Click to view {{fiddle.user}}'s page" href="{% url 'stats.views.getUserInfo' fiddle.user %}">{{fiddle.user}}</a></strong> on {{fiddle.timestamp}}</li>
+                <li><a href="{{fiddle.fiddleLink}}" target="_blank">{{fiddle.fiddleLink}}</a> posted by <strong><a class="user-link" title="Click to view {{fiddle.user}}'s page" href="{% url 'stats.views.getUserInfo' fiddle.user %}">{{fiddle.user}}</a></strong> on <a href="{% url 'stats.views.getConvoPartial' fiddle.id %}">{{fiddle.timestamp}}</a></li>
             {% endfor %}
             </ul>
         </div>

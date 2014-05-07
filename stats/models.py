@@ -176,7 +176,7 @@ def getLatestFiddles(channelName, userName = None):
             for i in Messages.objects.filter(channel_id=1, content__contains='http://jsfiddle.net/').order_by('-timestamp')[:5]:
                 if re.search('http://jsfiddle.net/[^\s]*', i.content):
                     fiddleLink = re.search('http://jsfiddle.net/[^\s]*', i.content).group(0)
-                    collection.append({'fiddleLink': fiddleLink, 'user': i.user, 'timestamp': i.timestamp})
+                    collection.append({'fiddleLink': fiddleLink, 'user': i.user, 'timestamp': i.timestamp, 'id': i.id})
 
             cache.set('latestFiddles', collection, 300)
         else:
@@ -187,7 +187,7 @@ def getLatestFiddles(channelName, userName = None):
             for i in Messages.objects.filter(channel_id=1, content__contains='http://jsfiddle.net/', user__user=userName).order_by('-timestamp')[:5]:
                 if re.search('http://jsfiddle.net/[^\s]*', i.content):
                     fiddleLink = re.search('http://jsfiddle.net/[^\s]*', i.content).group(0)
-                    collection.append({'fiddleLink': fiddleLink, 'user': i.user, 'timestamp': i.timestamp})
+                    collection.append({'fiddleLink': fiddleLink, 'user': i.user, 'timestamp': i.timestamp, 'id': i.id})
             cache.set('latestFiddles_' + userName, collection, 300)
         else:
             collection = cache.get('latestFiddles_' + userName)

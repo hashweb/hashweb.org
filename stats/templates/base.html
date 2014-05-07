@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load subdomainurls %}
 <!DOCTYPE html>
 <html class="no-js">
     <head>
@@ -20,9 +21,19 @@
     <body>
     <header class="main-heading header-container">
       <div class="container">
-        <a href="http://hashweb.org">
+        <a href="http://hashweb.org" class="logo-wrap">
           <img src="{% static 'img/hashweb_logo.png' %}" alt="#web Logo" class="header-web-logo" title="#Web" />
         </a>
+        <nav class="main-menu-wrap">
+          <ul class="main-menu cf">
+            <li>
+              <a href="http://wiki.hashweb.org"><h4>Wiki</h4></a>
+            </li>
+            <li>
+              <a href="{% url 'stats.views.index' subdomain='stats' %}"><h4>Stats</h4></a>
+            </li>
+          </ul>
+        </nav>
 
         <form role="form" class="navbar-form" method="GET" action="/search">
           <div class="form-group">

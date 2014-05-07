@@ -53,6 +53,7 @@ subprocess.call(['pip', 'install', 'Pillow']) # for django-wiki
 subprocess.call(['pip', 'install', 'uwsgitop']) # Useful for monitering uwsgi processes
 subprocess.call(['pip', 'install', 'git+https://github.com/benjaoming/django-wiki.git']) # The version from PIP seems outdated, use the master branch on github instead
 subprocess.call(['pip', 'install', 'djrill']) # Mandrill Email
+subprocess.call(['pip', 'install', 'django-debug-toolbar'])
 
 
 # Get Limnoria & install it

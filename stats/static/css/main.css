@@ -22,6 +22,37 @@ path {
   fill-opacity: .9;
 }
 
+.logo-wrap {
+  float: left;
+  margin-right: 16px;
+}
+
+.main-menu-wrap {
+  float: left;
+  height: 65px;
+  align-items: center;
+  line-height: 40px;
+  flex-flow: row;
+  display: flex;
+}
+.main-menu {
+  padding: 0;
+  list-style: none;
+  margin-bottom: 0;
+}
+
+.main-menu a {
+  color: #999;
+}
+
+.main-menu a:hover {
+  color: #fff;
+}
+.main-menu li {
+  float: left;
+  margin-right: 16px;
+}
+
 .header-container {
   line-height: 48px;
 }
@@ -29,7 +60,6 @@ path {
 .header-web-logo {
   width: 150px;
   margin: 10px 0;
-  float: left;
 }
 
 .last-seen {
@@ -53,7 +83,7 @@ path {
   background-color: #667EFF;
   color: #FFF;
   text-decoration: none;
-  margin-bottom: 5px;
+  margin-bottom: 16px;
   display: inline-block;
   padding: 5px;
 }

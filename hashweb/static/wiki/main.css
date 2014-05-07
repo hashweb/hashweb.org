@@ -1,0 +1,46 @@
+.header-web-logo {
+	width: 150px;
+	margin: 10px 0;
+	float: left;
+	margin-right: 16px;	
+}
+
+
+.nav-collapse {
+	background-image: url('../img/hashweb_logo.png');
+	background-repeat: no-repeat;
+	background-size: 148px;
+	padding: 10px 0;
+	background-position: 0px 10px;
+}
+
+.navbar-nav {
+	margin-left: 160px;
+}
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.nav-collapse:before,
+.nav-collapse:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.nav-collapse:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.nav-collapse {
+    *zoom: 1;
+}

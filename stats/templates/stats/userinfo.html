@@ -57,7 +57,7 @@
                             <div class="cf">
                                 <ul class="jsfiddles-list">
                                 {% for fiddle in fiddles %}
-                                    <li><a href="{{fiddle.fiddleLink}}" target="_blank">{{fiddle.fiddleLink}}</a> posted on {{fiddle.timestamp}}</li>
+                                    <li><a href="{{fiddle.fiddleLink}}" target="_blank">{{fiddle.fiddleLink}}</a> posted on <a href="{% url 'stats.views.getConvoPartial' fiddle.id %}">{{fiddle.timestamp}}</a></li>
                                 {% endfor %}
                                 </ul>
                             </div>
