@@ -10,15 +10,16 @@
         <![endif]-->
 
         {% if results %}
+        <p style="font-weight: bold;">Click on timestamp to view log, or username to view their info</p>
         <div class="results-wrapper">
         	<ul>
         		{% for item in results %}
         			<li>
-        				<a href="{% url 'stats.views.getConvoPartial' item.id %}">
-	        				<span class="search-timestamp">[{{item.timestamp}}]</span>
-	        				<span class="search-user">&lt;{{item.user}}&gt;</span>
+        				
+	        				<span class="search-timestamp"><a href="{% url 'stats.views.getConvoPartial' item.id %}">[{{item.timestamp}}]</a></span>
+	        				<span class="search-user">&lt;<a href="{% url 'stats.views.getUserInfo' item.user %}">{{item.user}}&gt;</a></span>
 	        				<span class="search-content">{{item.content}}</span>
-	        			</a>
+	        			
         			
         			</li>
         		{% endfor %}
