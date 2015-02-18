@@ -284,14 +284,13 @@ def isUserOnline(username):
     else:
         return True
 
-def getAverageMessagesPerDay(channelName, username):
-    # select avg(count) from (select timestamp, count(*) from (select users.user, timestamp::date, count(*) from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' AND action = 'message' group by messages.timestamp, messages.content, users.user) as foo group by foo.timestamp order by count desc) as lol;
-    pass
-
 # This method provides a good way of knowing if a user has spoken or not, if the returned result is 0, we have an existing user, who has never spoken, (lurker)
 def userMessageCountOverall(channelName, username):
-    channel = _getChannelID(channelName)
-    return len(Messages.objects.using('stats').filter(user__user=username, channel_id=channel, action='message'))
+    if (cache.get('userMessageCountOverall__' + channelName + username)):
+        return cache.get('userMessageCountOverall__' + channelName + username)
+    else:
+        channel = _getChannelID(channelName)
+        return len(Messages.objects.using('stats').filter(user__user=username, channel_id=channel, action='message'))
 
 # Bring back capital letters
 # This can be cached

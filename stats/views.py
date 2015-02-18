@@ -11,7 +11,7 @@ from django import forms
 # Create your views here.
 
 
-# @cache_page(60 * 5)
+@cache_page(60 * 5)
 def index(request):
 	channelNameHash = 'web'
 	channelName = '#' + 'web'
@@ -22,7 +22,7 @@ def index(request):
 	totalMessagesFromChannel = '{0:,}'.format(models.getTotalMessagesFromChannel(channelName))
 	return render(request, 'stats/index.html', locals())
 
-
+@cache_page(60 * 5)
 def getUserInfo(request, username):
 	channelName = '#' + 'web'
 	# This user does not exist in the database
