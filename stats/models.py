@@ -103,7 +103,7 @@ def getFullUserCount(channelName, timefrom=False, timeto=False):
             if cache.get('getFullUserCount'):
                 results = cache.get('getFullUserCount')
             else:
-                for i in UserCount.objects.using('stats').filter(channel_id=channel).order_by('-timestamp'):
+                for i in UserCount.objects.using('stats').filter(channel_id=channel).order_by('-timestamp')[::100]: #iterate over every 100 to bring the data payload down
                     results.append({"count": i.count, "timestamp": i.timestamp.strftime('%a, %d %b %Y %H:%M:%S +0000')})
                 #cache the result because its heavy
                 cache.set('getFullUserCount', results, 3600)
@@ -334,7 +334,7 @@ def search(channelName, query):
     else:
         channel = _getChannelID(channelName)
         results = []
-        for i in Messages.objects.filter(channel_id=1, content__icontains=query).order_by('-timestamp')[:20]:
+        for i in Messages.objects.filter(channel_id=1, content__icontains=query).order_by('-timestamp')[:60]:
             results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
 
         cache.set('search_' + query.replace(' ', ''), results, 10)

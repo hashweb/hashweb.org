@@ -33,6 +33,7 @@ define(function() {
 	var focus = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	d3.json('getfullusercountweek', function (data) {
+		jQuery('.loading-message').hide();
 	    data.forEach(function(d) {
 	      d.timestamp = parseDate(d.timestamp);
 	    });

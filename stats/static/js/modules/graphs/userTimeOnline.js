@@ -24,8 +24,8 @@ var svg = d3.select(".time-online").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("/getusertimeonline/" + user, function(error, data) {
-
+d3.json("/stats/getusertimeonline/" + user, function(error, data) {
+        jQuery('.loading-message').hide();
 	  data.forEach(function(d) {
 	    d.frequency = +d.frequency;
 	  });

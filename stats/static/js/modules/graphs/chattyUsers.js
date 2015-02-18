@@ -27,7 +27,7 @@ var svg = d3.select(".chattyUsers").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 d3.json("getchattyusers", function(error, data) {
-
+    jQuery('.loading-message').hide();
 	  data.forEach(function(d) {
 	    d.frequency = +d.frequency;
 	  });

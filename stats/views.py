@@ -11,7 +11,7 @@ from django import forms
 # Create your views here.
 
 
-@cache_page(60 * 5)
+# @cache_page(60 * 5)
 def index(request):
 	channelNameHash = 'web'
 	channelName = '#' + 'web'
@@ -51,8 +51,9 @@ def getUserInfo(request, username):
 
 def search(request):
 	if request.method == 'GET':
-		q = request.GET['q']
-		results = models.search('web', q)
+		q = request.GET.get('q', None)
+		if q:
+			results = models.search('web', q)
 
 	return render(request, 'stats/searchLanding.html', locals())
 
@@ -86,18 +87,19 @@ def userInfo(request, userName):
 			for fiddle in data['fiddles']:
 				fiddle['timestamp'] = str(fiddle['timestamp'])
 				del fiddle['user'] 
-				del fiddle['id']
 
 		#  Get last seen and first seem
 		lastSeen = models.getUserLastSeen('#web', userName)
 		data['lastSeen'] = {}
 		data['lastSeen']['message'] = lastSeen.content
 		data['lastSeen']['timeStamp'] = str(lastSeen.timestamp)
+		data['lastSeen']['messageID'] = lastSeen.id
 
 		firstSeen = models.getUserFirstSeen('#web', userName)
 		data['firstSeen'] = {}
 		data['firstSeen']['message'] = firstSeen.content
 		data['firstSeen']['timestamp'] = str(firstSeen.timestamp)
+		data['firstSeen']['messageID'] = firstSeen.id
 
 		# Message count
 		data['messageCount'] = models.userMessageCountOverall('#web', userName)

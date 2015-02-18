@@ -179,6 +179,16 @@ table .jsfiddles-list {
   margin-top: 10px;
 }
 
+.graph {
+  position:relative;
+}
+
+.loading-message {
+  position: absolute;
+  left: 41%;
+  top: 30%;
+}
+
 
 /** ====== Search ===== */
 
