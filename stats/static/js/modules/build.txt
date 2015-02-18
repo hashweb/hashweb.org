@@ -6,7 +6,6 @@ userinfo.js
 
 main.js
 ----------------
-graphs/fullcount.js
 graphs/fullCountWeek.js
 graphs/fullCountToday.js
 graphs/chattyUsers.js

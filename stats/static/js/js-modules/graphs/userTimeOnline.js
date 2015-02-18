@@ -53,12 +53,12 @@ d3.json("/stats/getusertimeonline/" + user, function(error, data) {
 	    .append("svg:title")
 	    	.text(function(d, i) { return d.perc + '%'; })
 
-	  d3.select("input").on("change", change);
+	  // d3.select("input").on("change", change);
 
-	  var sortTimeout = setTimeout(function() {
-	    d3.select("input").property("checked", true).each(change);
-	  }, 2000);
-
+	  // var sortTimeout = setTimeout(function() {
+	  //   d3.select("input").property("checked", true).each(change);
+	  // }, 2000);
+    // Hopefully this no longer gets called...
 	  function change() {
 	    clearTimeout(sortTimeout);
 
