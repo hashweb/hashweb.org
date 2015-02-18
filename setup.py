@@ -27,10 +27,7 @@ if not os.path.exists('config.json'):
 }
 	""" % (userName, userPass, userName)
 		configFile.write(configText)
-	confirm = raw_input("Are you running this script from the host machine? yes/no: ")
-	if (confirm == "yes"):
-		print "Run again from guest"
-		sys.exit();
+	
 
 # open the config file
 with open('config.json', 'r') as configFile:
