@@ -48,12 +48,12 @@ subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-
 subprocess.call(['pip', 'install', 'psycopg2'])
 subprocess.call(['pip', 'install', 'django'])
 subprocess.call(['pip', 'install', 'python-memcached'])
-subprocess.call(['pip', 'install', 'django-subdomains']) # Seperate logs, wiki and main site
 subprocess.call(['pip', 'install', 'Pillow']) # for django-wiki
 subprocess.call(['pip', 'install', 'uwsgitop']) # Useful for monitering uwsgi processes
 subprocess.call(['pip', 'install', 'git+https://github.com/benjaoming/django-wiki.git']) # The version from PIP seems outdated, use the master branch on github instead
 subprocess.call(['pip', 'install', 'djrill']) # Mandrill Email
 subprocess.call(['pip', 'install', 'django-debug-toolbar'])
+subprocess.call(['pip', 'install', 'django_notify'])
 
 
 # Get Limnoria & install it

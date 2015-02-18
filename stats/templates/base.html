@@ -1,5 +1,4 @@
 {% load staticfiles %}
-{% load subdomainurls %}
 <!DOCTYPE html>
 <html class="no-js">
     <head>
@@ -30,7 +29,7 @@
               <a href="http://wiki.hashweb.org"><h4>Wiki</h4></a>
             </li>
             <li>
-              <a href="{% url 'stats.views.index' subdomain='stats' %}"><h4>Stats</h4></a>
+              <a href="{% url 'stats.views.index' %}"><h4>Stats</h4></a>
             </li>
           </ul>
         </nav>

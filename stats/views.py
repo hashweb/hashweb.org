@@ -63,6 +63,50 @@ def getConvoPartial(request, id):
 	id = id + 10;
 	return render(request, 'stats/log_convo.html', locals())
 
+	# ----- Open API stuff ------
+
+def userInfo(request, userName):
+	data = {}
+	if userName:
+		data['username'] = userName = models.getNormalizedUserName(userName)
+		data['isUserOnline'] = models.isUserOnline(userName)
+		# Get the last time the user was seen
+		notSeenFor = {}
+		notSeenFor['days'] = models.lastSeenDelta('#web', userName).days
+		notSeenFor['seconds'] = models.lastSeenDelta('#web', userName).seconds
+		notSeenFor['hours'] = notSeenFor['seconds'] // 3600
+		notSeenFor['seconds'] = notSeenFor['seconds'] - (notSeenFor['hours'] * 3600)
+		notSeenFor['minutes'] = notSeenFor['seconds'] // 60
+		notSeenFor['seconds'] = (notSeenFor['minutes'] * 60)
+		data['userNotSeenFor'] = notSeenFor
+
+		#  get JS fiddles if user has any
+		data['fiddles'] = models.getLatestFiddles('#web', userName)
+		if (data['fiddles']):
+			for fiddle in data['fiddles']:
+				fiddle['timestamp'] = str(fiddle['timestamp'])
+				del fiddle['user'] 
+				del fiddle['id']
+
+		#  Get last seen and first seem
+		lastSeen = models.getUserLastSeen('#web', userName)
+		data['lastSeen'] = {}
+		data['lastSeen']['message'] = lastSeen.content
+		data['lastSeen']['timeStamp'] = str(lastSeen.timestamp)
+
+		firstSeen = models.getUserFirstSeen('#web', userName)
+		data['firstSeen'] = {}
+		data['firstSeen']['message'] = firstSeen.content
+		data['firstSeen']['timestamp'] = str(firstSeen.timestamp)
+
+		# Message count
+		data['messageCount'] = models.userMessageCountOverall('#web', userName)
+
+		return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+	# ------Private API stuff -----
+
 
 def getFullUserCount(request):
 	channelName = '#' + 'web'

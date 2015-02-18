@@ -24,7 +24,12 @@ urlpatterns += patterns('',
     url(r'^getfullusercounttoday', 'stats.views.getFullUserCountToday'),
     url(r'^getfullusercount', 'stats.views.getFullUserCount'),
     url(r'^getusertimeonline/(.*)$', 'stats.views.getUserTimeOnline'),
-    url(r'', 'stats.views.index'),
+
+    # Open API stuff
+    url(r'^users/(.*)$', 'stats.views.userInfo'),
+
+
+    url(r'^$', 'stats.views.index'),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
