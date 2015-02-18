@@ -128,7 +128,7 @@ def getChattyUsers(channelName):
         resultSet = []
         for i in result:
             resultSet.append({'user': i[0], 'noOfMessages': i[1]})
-        cache.set('getChattyUsers', resultSet, 300)
+        cache.set('getChattyUsers', resultSet, 86400)
     else:
         resultSet = cache.get('getChattyUsers')
     return resultSet
@@ -216,17 +216,19 @@ def getUserLastSeen(channelName, username):
         # select * from users inner join messages on (users.id = messages.user) where users.user = 'Jayflux' AND action = 'message' AND channel_id = 1 order by timestamp asc LIMIT 1;
         channel = _getChannelID(channelName)
         lastSeenObj = Messages.objects.using('stats').filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('-timestamp')[0]
+        cache.set('getUserLastSeen' + channelName + username, lastSeenObj, 300)
         return lastSeenObj
 
 def getUserFirstSeen(channelName, username):
     if (cache.get('getUserFirstSeen' + channelName + username)):
         return cache.get('getUserFirstSeen' + channelName + username)
     else:
-        
+
         # reverse of last see
         # TODO: First seen could be cached for a long time as its data that won't change
         channel = _getChannelID(channelName)
         firstSeenObj = Messages.objects.using('stats').filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('timestamp')[0]
+        cache.set('getUserFirstSeen' + channelName + username, firstSeenObj, 604800) # < this data will never change, cache for a week
         return firstSeenObj
 
 def lastSeenDelta(channelName, userName):
@@ -302,7 +304,12 @@ def userMessageCountOverall(channelName, username):
 # Bring back capital letters
 # This can be cached
 def getNormalizedUserName(username):
-    return Users.objects.using('stats').filter(user__iexact=username)[0].user
+    if (cache.get('getNormalizedUserName_' + username)):
+        return cache.get('getNormalizedUserName_' + username)
+    else:
+        normalizedName = Users.objects.using('stats').filter(user__iexact=username)[0].user;
+        cache.set('getNormalizedUserName_' + username, normalizedName, 86400)
+        return normalizedName
 
 def getUserTimeOnline(channelName, username):
     # Django 1.6 cannot aggregate by date or extract hours from timestamps easily (coming in 1.7), so until then I need to do a raw query
@@ -343,7 +350,7 @@ def search(channelName, query):
         for i in Messages.objects.filter(channel_id=1, content__icontains=query).order_by('-timestamp')[:60]:
             results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
 
-        cache.set('search_' + query.replace(' ', ''), results, 10)
+        cache.set('search_' + query.replace(' ', ''), results, 600)
         return results
 
 def avgPerDay(channelName, userName):
@@ -358,6 +365,7 @@ def avgPerDay(channelName, userName):
         # start with how long the user has been in #web
         daysSinceRegistered = (lastSeen.timestamp - firstSeen.timestamp).days
         # then divide the number of posts into those days
+        cache.set('avgPerDay_' + channelName + userName, (totalMessages / daysSinceRegistered), 300)
         return totalMessages / daysSinceRegistered
 
 
