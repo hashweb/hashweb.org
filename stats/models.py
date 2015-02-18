@@ -210,17 +210,24 @@ def getMostFullTime(channelName):
     return result
 
 def getUserLastSeen(channelName, username):
-    # select * from users inner join messages on (users.id = messages.user) where users.user = 'Jayflux' AND action = 'message' AND channel_id = 1 order by timestamp asc LIMIT 1;
-    channel = _getChannelID(channelName)
-    lastSeenObj = Messages.objects.using('stats').filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('-timestamp')[0]
-    return lastSeenObj
+    if (cache.get('getUserLastSeen' + channelName + username)):
+        return cache.get('getUserLastSeen' + channelName + username)
+    else:
+        # select * from users inner join messages on (users.id = messages.user) where users.user = 'Jayflux' AND action = 'message' AND channel_id = 1 order by timestamp asc LIMIT 1;
+        channel = _getChannelID(channelName)
+        lastSeenObj = Messages.objects.using('stats').filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('-timestamp')[0]
+        return lastSeenObj
 
 def getUserFirstSeen(channelName, username):
-    # reverse of last see
-    # TODO: First seen could be cached for a long time as its data that won't change
-    channel = _getChannelID(channelName)
-    firstSeenObj = Messages.objects.using('stats').filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('timestamp')[0]
-    return firstSeenObj
+    if (cache.get('getUserFirstSeen' + channelName + username)):
+        return cache.get('getUserFirstSeen' + channelName + username)
+    else:
+        
+        # reverse of last see
+        # TODO: First seen could be cached for a long time as its data that won't change
+        channel = _getChannelID(channelName)
+        firstSeenObj = Messages.objects.using('stats').filter(user__user__iexact=username).filter(action='message').filter(channel_id=channel).order_by('timestamp')[0]
+        return firstSeenObj
 
 def lastSeenDelta(channelName, userName):
     lastSeen = getUserLastSeen(channelName, userName)
