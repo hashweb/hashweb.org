@@ -50,7 +50,11 @@
                     {% endif %}
                 </tr>
                 <tr>
-                    <td><p class="user-total-messages">{{userMessageCountOverall}}</p></td>
+                    <td>
+                        <p class="user-total-messages">{{userMessageCountOverall}}</p>
+                        <span class="on-average-heading">On Average.....</span>
+                        <p class="user-avg-messages"><span class="avg-figure">{{avgPostsPerDay}}</span> Per Day</p>
+                    </td>
                     <td><div class="time-online graph"><span class="loading-message">Pinging Natasha....</span></div></td>
                     {% if fiddles %}
                         <td>

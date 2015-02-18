@@ -9,7 +9,7 @@
 # into your database.
 from __future__ import unicode_literals
 import datetime
-from datetime import timedelta
+from datetime import timedelta, date
 import json
 import re
 
@@ -339,3 +339,19 @@ def search(channelName, query):
 
         cache.set('search_' + query.replace(' ', ''), results, 10)
         return results
+
+def avgPerDay(channelName, userName):
+    if cache.get('avgPerDay_' + channelName + userName):
+        return cache.get('avgPerDay_' + channelName + userName)
+    else:
+        channel = _getChannelID(channelName)
+        userName = getNormalizedUserName(userName)
+        totalMessages = userMessageCountOverall(channelName, userName)
+        lastSeen = getUserLastSeen(channelName, userName)
+        firstSeen = getUserFirstSeen(channelName, userName)
+        # start with how long the user has been in #web
+        daysSinceRegistered = (lastSeen.timestamp - firstSeen.timestamp).days
+        # then divide the number of posts into those days
+        return totalMessages / daysSinceRegistered
+
+

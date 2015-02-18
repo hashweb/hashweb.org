@@ -149,6 +149,15 @@ path {
   list-style: none;
 }
 
+.on-average-heading {
+  font-style: italic;
+  font-weight: bold;
+}
+
+.avg-figure {
+  font-size: 40px;
+}
+
 table .jsfiddles-list {
   padding-left: 0;
 }

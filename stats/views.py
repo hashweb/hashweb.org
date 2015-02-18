@@ -22,7 +22,7 @@ def index(request):
 	totalMessagesFromChannel = '{0:,}'.format(models.getTotalMessagesFromChannel(channelName))
 	return render(request, 'stats/index.html', locals())
 
-@cache_page(60 * 1)
+
 def getUserInfo(request, username):
 	channelName = '#' + 'web'
 	# This user does not exist in the database
@@ -47,6 +47,8 @@ def getUserInfo(request, username):
 	notSeenFor['seconds'] = notSeenFor['seconds'] - (notSeenFor['hours'] * 3600)
 	notSeenFor['minutes'] = notSeenFor['seconds'] // 60
 	notSeenFor['seconds'] = (notSeenFor['minutes'] * 60)
+
+	avgPostsPerDay = models.avgPerDay('#web', username)
 	return render(request, 'stats/userinfo.html', locals())
 
 def search(request):
@@ -103,6 +105,8 @@ def userInfo(request, userName):
 
 		# Message count
 		data['messageCount'] = models.userMessageCountOverall('#web', userName)
+
+		data['avgPostsPerDay'] = models.avgPerDay('#web', userName)
 
 		return HttpResponse(json.dumps(data), content_type="application/json")
 
