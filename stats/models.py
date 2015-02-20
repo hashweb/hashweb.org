@@ -12,6 +12,7 @@ import datetime
 from datetime import timedelta, date
 import json
 import re
+import hashlib
 
 from django.db import models
 from django.utils import timezone
@@ -342,15 +343,16 @@ def getTotalMessagesFromChannel(channelName):
 
 def search(channelName, query):
     # Cache keys cannot have spaces in them
-    if cache.get('search_' + query.replace(' ', '')):
-        return cache.get('search_' + query)
+    key = hashlib.sha256('search_' + query).hexdigest()
+    if cache.get(key):
+        return cache.get(key)
     else:
         channel = _getChannelID(channelName)
         results = []
         for i in Messages.objects.filter(channel_id=1, content__icontains=query).order_by('-timestamp')[:60]:
             results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
 
-        cache.set('search_' + query.replace(' ', ''), results, 600)
+        cache.set(key, results, 600)
         return results
 
 def avgPerDay(channelName, userName):
