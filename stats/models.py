@@ -367,7 +367,7 @@ def avgPerDay(channelName, userName):
         daysSinceRegistered = (lastSeen.timestamp - firstSeen.timestamp).days
         # User may not have any posts at all, days since registered also uses posts to work out when a user started talking
         # Both or either of these could be 0, if a user has joined a channel but never spoke
-        if (totalMessages && daysSinceRegistered):
+        if totalMessages && daysSinceRegistered:
             # start with how long the user has been in #web
             # then divide the number of posts into those days
             cache.set('avgPerDay_' + channelName + userName, (totalMessages / daysSinceRegistered), 300)
