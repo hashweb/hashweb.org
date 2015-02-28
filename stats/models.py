@@ -364,10 +364,14 @@ def avgPerDay(channelName, userName):
         totalMessages = userMessageCountOverall(channelName, userName)
         lastSeen = getUserLastSeen(channelName, userName)
         firstSeen = getUserFirstSeen(channelName, userName)
-        # start with how long the user has been in #web
-        daysSinceRegistered = (lastSeen.timestamp - firstSeen.timestamp).days
-        # then divide the number of posts into those days
-        cache.set('avgPerDay_' + channelName + userName, (totalMessages / daysSinceRegistered), 300)
-        return totalMessages / daysSinceRegistered
-
+        # User may not have any posts at all
+        if (totalMessages):
+            # start with how long the user has been in #web
+            daysSinceRegistered = (lastSeen.timestamp - firstSeen.timestamp).days
+            # then divide the number of posts into those days
+            cache.set('avgPerDay_' + channelName + userName, (totalMessages / daysSinceRegistered), 300)
+            return totalMessages / daysSinceRegistered
+        else:
+            cache.set('avgPerDay_' + channelName + userName, 0, 300)
+            return 0
 
