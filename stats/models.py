@@ -342,15 +342,29 @@ def getTotalMessagesFromChannel(channelName):
         return result
 
 def search(channelName, query):
-    # Cache keys cannot have spaces in them
+    # Cache keys cannot have spaces in them, hash them up, as we never know what people will type in
     key = hashlib.sha256('search_' + query).hexdigest()
+    channel = _getChannelID(channelName)
+    results = []
     if cache.get(key):
         return cache.get(key)
     else:
-        channel = _getChannelID(channelName)
-        results = []
-        for i in Messages.objects.filter(channel_id=1, content__icontains=query).order_by('-timestamp')[:60]:
-            results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
+        # scope by user
+        userRegex = r'user\:\s?(\w+)\s?'
+        # If someone is searching by user, scope by user
+        if re.search(userRegex, query) and len(re.search(userRegex, query).groups()) > 0:
+            user = re.search(userRegex, query).group(1)
+            query = re.sub(userRegex, '', query)
+            # If there's a search query, scope that query by user
+            if query:
+                for i in Messages.objects.filter(channel_id=1, action="message", content__icontains=query, user__user__iexact=user).order_by('-timestamp')[:60]:
+                    results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
+            else:
+                for i in Messages.objects.filter(channel_id=1, action="message", user__user__iexact=user).order_by('-timestamp')[:60]:
+                    results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
+        else:
+            for i in Messages.objects.filter(channel_id=1, action="message", content__icontains=query).order_by('-timestamp')[:60]:
+                results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
 
         cache.set(key, results, 600)
         return results
