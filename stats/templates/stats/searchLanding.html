@@ -4,6 +4,7 @@
 {% block content %}
     <div class="container page-wrap" data-user="{{username}}">
         <h1>Search</h1>
+        <h2>{{q}}</h2>
         <a class="return-to-stats" href="{% url 'stats.views.index' %}">Return to stats</a>
         <!--[if lt IE 8]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
