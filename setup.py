@@ -43,7 +43,7 @@ subprocess.call(['apt-get', 'update'])
 #'libjpeg8', 'libjpeg-dev', 'libpng', 'libpng-dev' are for Django-wiki (pip) / http://django-wiki.readthedocs.org/en/latest/installation.html
 subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip', 'git', 'ipython-notebook', 'memcached', 'htop', 'libjpeg8', 'libjpeg-dev', 'libpng12-0', 'libpng12-dev'])
 subprocess.call(['pip', 'install', 'psycopg2'])
-subprocess.call(['pip', 'install', 'django'])
+subprocess.call(['pip', 'install', 'Django==1.7.4'])
 subprocess.call(['pip', 'install', 'python-memcached'])
 subprocess.call(['pip', 'install', 'Pillow']) # for django-wiki
 subprocess.call(['pip', 'install', 'uwsgitop']) # Useful for monitering uwsgi processes

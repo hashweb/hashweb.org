@@ -6,7 +6,7 @@
         <h1>Stats for {{username}}</h1>
         <a class="return-to-stats" href="{% url 'stats.views.index' %}">Return to stats</a>
         {% if isUserOnline %}
-        <p class="user-online-text">{{username}} is online, but hasn't spoken for {{notSeenFor.days|default:"0" }} days, {{notSeenFor.hours}} hours, {{notSeenFor.minutes}} minutes</p>
+        <p class="user-online-text">{{username}} is online, but hasn't spoken for {% if notSeenFor.days %} {{notSeenFor.days|default:"0" }} days,{% endif %} {{notSeenFor.hours}} {% if notSeenFor.hours %}hours,{% endif %} {{notSeenFor.minutes}} minutes</p>
         {% else %}
         <p class="user-online-text">{{username}} is offline, and hasn't been seen for {{notSeenFor.days|default:"0" }} days, {{notSeenFor.hours}} hours, {{notSeenFor.minutes}} minutes</p>
         {% endif %}
