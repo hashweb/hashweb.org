@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from stats import models
 from django.shortcuts import redirect
 from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_exempt
 from django import forms
 
 # Create your views here.
@@ -147,11 +148,34 @@ def getUserTimeOnline(request, userName):
 
 
 	# ----- Bans -------
-@cache_page(60 * 0.5)
 def showBansPage(request):
 	bansList = models.get_list_of_bans()
 	return render(request, 'stats/bans.html', locals())
 
+def reIndexBans(request):
+	if (request.method == "POST"):
+		models.process_bans_table()
+		return HttpResponse(json.dumps({"message": "Table Updated"}), content_type="application/json")
+	else:
+		return redirect('stats.views.showBansPage')
 
+
+@csrf_exempt
 def adjustBan(request, ID):
-	print ID
+	if (request.method == "POST"):
+		req = request.POST
+		banInput = {}
+
+		if 'reminderTime' in req:
+			banInput['reminderTime'] = req.get('reminderTime')
+
+		if 'reason' in req:
+			banInput['reason'] = req.get('reason')
+
+		if models.update_ban_obj(ID, banInput) == False:
+			return HttpResponse(json.dumps({"message": "Unable to find that ID or Wrong input"}), content_type="application/json")
+		else:
+			return HttpResponse(json.dumps({"message": "Added!"}), content_type="application/json")
+	else:
+		return redirect('stats.views.showBansPage')
+

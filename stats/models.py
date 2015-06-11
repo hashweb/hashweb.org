@@ -455,4 +455,24 @@ def process_bans_table():
 
 
 def get_list_of_bans():
-    return Bans.objects.filter(still_banned=True)
+    return Bans.objects.filter(still_banned=True).order_by("-id")
+
+def update_ban_obj(banID, banInput):
+    try:
+        banObj = Bans.objects.filter(id=banID)[0]
+    except:
+        return False
+
+    if banObj and banInput:
+        if 'reminderTime' in banInput:
+            banObj.reminder_time = banInput['reminderTime']
+
+        if 'reason' in banInput:
+            banObj.reason = banInput['reason']
+
+        print banObj.reason
+        print banObj.reminder_time
+        banObj.save()
+        return True
+    else:
+        return False
