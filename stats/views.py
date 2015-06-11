@@ -152,6 +152,7 @@ def showBansPage(request):
 	bansList = models.get_list_of_bans()
 	return render(request, 'stats/bans.html', locals())
 
+@csrf_exempt
 def reIndexBans(request):
 	if (request.method == "POST"):
 		models.process_bans_table()
