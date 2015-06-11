@@ -71,6 +71,25 @@ class Users(models.Model):
         return self.user
 
 
+class Bans(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    banmask = models.CharField(max_length=200)
+    timestamp = models.DateTimeField(blank=True, null=True)
+    reminder_time = models.CharField(max_length=100, blank=True)
+    reason = models.CharField(max_length=500, blank=True)
+    userid = models.ForeignKey('Users', related_name='+', db_column='userid')
+    banned_by = models.CharField(max_length=200, blank=True)
+    user_name = models.CharField(max_length=200, blank=True)
+    channel = models.ForeignKey('Channels', related_name='+', db_column='channel')
+    still_banned = models.NullBooleanField()
+    banned_by_id = models.ForeignKey('Users', related_name='+', db_column='banned_by_id')
+    row_processed = models.NullBooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'bans'
+
+
 def _getChannelID(channelName):
     """
     Returns the correct ID for the channelName provided
@@ -390,3 +409,50 @@ def avgPerDay(channelName, userName):
             cache.set('avgPerDay_' + channelName + userName, 0, 300)
             return 0
 
+def get_recent_user_by_id(username):
+    """Very basic model which will return the ID for a given user or false"""
+    """It works by finding the most recent message from a user, then returning the ID"""
+    """Soon there will be a similar model which will work by most posts, and not the last post"""
+    try:
+        user = Messages.objects.filter(user__user=username).order_by('-timestamp')[0].user
+        return user
+    except:
+        return False
+
+
+
+def convert_banmask_to_userObj(banmask):
+    """Using a banmask string, return a userObject or False"""
+
+    # We need to make sure any occurance of * is converted to .* (so its regex compatible)
+    banmask = re.sub('\*', '.*', banmask)
+    print banmask
+    try:
+        userObj = Messages.objects.filter(user__host__iregex=banmask).order_by('-timestamp')[0].user
+    except:
+        return False
+
+    return userObj
+
+#  Fill out the blanks in the Bans table, do some processing to reverse look-up the banmask with an actual user
+def process_bans_table():
+    # Lets loop through all bans that have not been processed and where the user is still banned
+    for banObj in Bans.objects.filter(row_processed=False, still_banned=True):
+        # We need to convert the banmask into an actual user name
+        banmask = banObj.banmask
+        userObj = convert_banmask_to_userObj(banmask)
+
+        if (userObj):
+            banObj.user_name = userObj.user
+            banObj.userid = userObj
+            # now lets get ther banner's infomation
+            banned_by_id = get_recent_user_by_id(banObj.banned_by)
+            if (banned_by_id):
+                banObj.banned_by_id = banned_by_id
+
+            banObj.row_processed = True
+            banObj.save()
+
+
+def get_list_of_bans():
+    return Bans.objects.filter(still_banned=True)

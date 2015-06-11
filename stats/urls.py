@@ -24,6 +24,8 @@ urlpatterns += patterns('',
     url(r'^getfullusercounttoday', 'stats.views.getFullUserCountToday'),
     url(r'^getfullusercount', 'stats.views.getFullUserCount'),
     url(r'^getusertimeonline/(.*)$', 'stats.views.getUserTimeOnline'),
+    url(r'^bans$', 'stats.views.showBansPage'),
+    url(r'^bans/(\d*)', 'stats.views.adjustBan'),
 
     # Open API stuff
     url(r'^users/(.*)$', 'stats.views.userInfo'),

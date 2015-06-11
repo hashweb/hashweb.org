@@ -51,6 +51,7 @@ def getUserInfo(request, username):
 	avgPostsPerDay = models.avgPerDay('#web', username)
 	return render(request, 'stats/userinfo.html', locals())
 
+
 def search(request):
 	if request.method == 'GET':
 		q = request.GET.get('q', None)
@@ -142,3 +143,15 @@ def getUserTimeOnline(request, userName):
 	channelName = '#' + 'web'
 	userName = urllib.unquote(userName)
 	return HttpResponse(json.dumps(models.getUserTimeOnline(channelName, userName)), content_type="application/json")
+
+
+
+	# ----- Bans -------
+@cache_page(60 * 0.5)
+def showBansPage(request):
+	bansList = models.get_list_of_bans()
+	return render(request, 'stats/bans.html', locals())
+
+
+def adjustBan(request, ID):
+	print ID
