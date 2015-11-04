@@ -12,3 +12,4 @@ urlpatterns = patterns('',
     # url(r'^stats', 'stats.views.index'),
     url(r'^$', 'hashweb.views.index')
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

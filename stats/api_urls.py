@@ -15,6 +15,7 @@ if settings.DEBUG:
     )
 
 urlpatterns += patterns('',
+	url(r'^users/(.*)/addkarma$', 'stats.views.addKarma'),
     url(r'^users/(.*)$', 'stats.views.userInfo')
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

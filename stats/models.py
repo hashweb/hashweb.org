@@ -63,6 +63,7 @@ class Users(models.Model):
     user = models.TextField(blank=True)
     host = models.CharField(max_length=100, blank=True)
     in_use = models.NullBooleanField()
+    karma = models.IntegerField(blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'users'
@@ -215,7 +216,16 @@ def getLatestFiddles(channelName, userName = None):
     return collection
 
 
+def getKarma(userName):
+    if doesUserExist(userName):
+        return Users.objects.using('stats').filter(user=userName).aggregate(models.Sum('karma'))
+    return False
 
+def addKarma(username, points):
+    username = getNormalizedUserName(username)
+    userObj = getUserLastSeen('#web', username).user
+    userObj.karma = userObj.karma + points
+    userObj.save()
 
 
 def getMostFullTime(channelName):
@@ -327,9 +337,12 @@ def getNormalizedUserName(username):
     if (cache.get('getNormalizedUserName_' + username)):
         return cache.get('getNormalizedUserName_' + username)
     else:
-        normalizedName = Users.objects.using('stats').filter(user__iexact=username)[0].user;
-        cache.set('getNormalizedUserName_' + username, normalizedName, 86400)
-        return normalizedName
+        usersObj = Users.objects.using('stats').filter(user__iexact=username) # This call will return multiple objects for every combination of hostname (we only care about the first one)
+        if usersObj:
+            normalizedName = usersObj[0].user
+            cache.set('getNormalizedUserName_' + username, normalizedName, 86400)
+            return normalizedName
+    return False
 
 def getUserTimeOnline(channelName, username):
     # Django 1.6 cannot aggregate by date or extract hours from timestamps easily (coming in 1.7), so until then I need to do a raw query
@@ -455,7 +468,7 @@ def process_bans_table():
 
 
 def get_list_of_bans():
-    return Bans.objects.filter(still_banned=True).order_by("-id")
+    return Bans.objects.filter(still_banned=True).order_by("-timestamp")
 
 def update_ban_obj(banID, banInput):
     try:

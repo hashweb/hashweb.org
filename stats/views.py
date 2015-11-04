@@ -72,9 +72,10 @@ def getConvoPartial(request, id):
 
 def userInfo(request, userName):
 	data = {}
-	if userName:
+	if models.getNormalizedUserName(userName):
 		data['username'] = userName = models.getNormalizedUserName(userName)
 		data['isUserOnline'] = models.isUserOnline(userName)
+		data['karma'] = models.getKarma(userName)['karma__sum']
 		# Get the last time the user was seen
 		notSeenFor = {}
 		notSeenFor['days'] = models.lastSeenDelta('#web', userName).days
@@ -107,11 +108,25 @@ def userInfo(request, userName):
 
 		# Message count
 		data['messageCount'] = models.userMessageCountOverall('#web', userName)
-
 		data['avgPostsPerDay'] = models.avgPerDay('#web', userName)
 
 		return HttpResponse(json.dumps(data), content_type="application/json")
 
+	else:
+		return HttpResponse(json.dumps({'statusCode': '404', 'response':'Sorry no available user: ' + userName}), status=404)
+
+@csrf_exempt
+def addKarma(request, userName):
+	userName = models.getNormalizedUserName(userName)
+	if userName:
+		if request.method == 'POST':
+			points = int(request.POST['points'])
+			models.addKarma(userName, points)
+			return HttpResponse(json.dumps({'statusCode': '200', 'response':'karma updated for ' + userName}), status=200)
+		else:
+			return HttpResponse(json.dumps({'statusCode': '405', 'response':'Sorry this api is only for POST'}), status=405)
+	else:
+		return HttpResponse(json.dumps({'statusCode': '404', 'response':'Sorry no available user'}), status=404)
 
 	# ------Private API stuff -----
 
