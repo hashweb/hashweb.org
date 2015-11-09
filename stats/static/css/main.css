@@ -6,7 +6,7 @@ body {
 path { 
     stroke: steelblue;
     stroke-width: 2;
-    fill:  rgb(143, 177, 206);
+    fill:  rgb(78, 124, 162);
 }
 
 .axis path,
@@ -17,8 +17,12 @@ path {
     shape-rendering: crispEdges;
 }
 
+.x line {
+  display:none;
+}
+
 .bar {
-  fill: rgb(143, 177, 206);
+  fill: rgb(78, 124, 162);
   fill-opacity: .9;
 }
 

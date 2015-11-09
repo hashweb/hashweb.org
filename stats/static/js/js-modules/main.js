@@ -1,4 +1,4 @@
-require(['graphs/fullCountWeek', 'graphs/fullCountToday', 'graphs/chattyUsers'], function(fullcount, fullCountToday) {
+require(['graphs/fullCountWeek', 'graphs/fullCountToday', 'graphs/chattyUsers', 'graphs/getKarmaUsers'], function(fullcount, fullCountToday) {
 
 	
 });

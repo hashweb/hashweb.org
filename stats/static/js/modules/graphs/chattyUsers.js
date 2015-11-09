@@ -1,8 +1,8 @@
 define(function() {
 
-var margin = {top: 20, right: 20, bottom: 60, left: 60},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var margin = {top: 20, right: 20, bottom: 40, left: 60},
+    width = 960;
+    height = 500;
 
 var formatPercent = d3.format(".0%");
 
@@ -14,7 +14,8 @@ var y = d3.scale.linear()
 
 var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("bottom");
+    .orient("bottom")
+    .tickSize(0, 0);
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -22,7 +23,7 @@ var yAxis = d3.svg.axis()
 
 var svg = d3.select(".chattyUsers").append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("height", 650)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -37,19 +38,23 @@ d3.json("getchattyusers", function(error, data) {
 
 	  svg.append("g")
 	      .attr("class", "x axis")
-	      .attr("transform", "translate(-10," + (height + 30)+ ")")
+	      .attr("transform", "translate(-12," + (height + 40) + ")")
 	      .call(xAxis)
 	      .selectAll('text')
 	      		.attr("transform", function(d) {
-                	return "rotate(-90)" 
+                	return "rotate(-87)" 
                 })
+
+
+
+      d3.selectAll('.x line, .x path').remove();
 
 	  svg.append("g")
 	      .attr("class", "y axis")
 	      .call(yAxis)
 	    .append("text")
 	      .attr("transform", "rotate(-90)")
-	      .attr("y", 6)
+	      .attr("y", 12)
 	      .attr("dy", ".71em")
 	      .style("text-anchor", "end")
 	      .text("No Of Messages");
@@ -68,7 +73,8 @@ d3.json("getchattyusers", function(error, data) {
 	  d3.select("input").on("change", change);
 
 	  var sortTimeout = setTimeout(function() {
-	    d3.select("input").property("checked", true).each(change);
+
+	    // d3.select("input").property("checked", true).each(change);
 	  }, 2000);
 
 	  function change() {

@@ -146,6 +146,11 @@ def getFullUserCountWeek(request):
 	fullUserCount = models.getFullUserCountWeek(channelName)
 	return HttpResponse(json.dumps(fullUserCount), content_type="application/json")
 
+def getKarmaUsers(request):
+	channelName = '#' + 'web'
+	karmaUsers = models.getKarmaUsers(channelName)
+	return HttpResponse(json.dumps(karmaUsers), content_type="application/json")
+
 def getChattyUsers(request):
 	channelName = '#' + 'web'
 	chattyUsers = models.getChattyUsers(channelName)

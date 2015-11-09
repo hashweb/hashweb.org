@@ -1,8 +1,8 @@
 define(function() {
 
-var margin = {top: 20, right: 20, bottom: 40, left: 60},
-    width = 960;
-    height = 500;
+var margin = {top: 20, right: 20, bottom: 60, left: 60},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
 var formatPercent = d3.format(".0%");
 
@@ -14,38 +14,35 @@ var y = d3.scale.linear()
 
 var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("bottom")
-    .tickSize(0, 0);
+    .orient("bottom");
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
 
-var svg = d3.select(".chattyUsers").append("svg")
+var svg = d3.select(".karmaUsers").append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", 650)
+    .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("getchattyusers", function(error, data) {
+d3.json("getkarmausers", function(error, data) {
     jQuery('.loading-message').hide();
 	  data.forEach(function(d) {
 	    d.frequency = +d.frequency;
 	  });
 
 	  x.domain(data.map(function(d) { return d.user; }));
-	  y.domain([0, d3.max(data, function(d) { return d.noOfMessages; })]);
+	  y.domain([0, d3.max(data, function(d) { return d.noOfKarma; })]);
 
 	  svg.append("g")
 	      .attr("class", "x axis")
-	      .attr("transform", "translate(-12," + (height + 40) + ")")
+	      .attr("transform", "translate(-10," + (height + 30)+ ")")
 	      .call(xAxis)
 	      .selectAll('text')
 	      		.attr("transform", function(d) {
-                	return "rotate(-87)" 
+                	return "rotate(-90)" 
                 })
-
-
 
       d3.selectAll('.x line, .x path').remove();
 
@@ -54,10 +51,10 @@ d3.json("getchattyusers", function(error, data) {
 	      .call(yAxis)
 	    .append("text")
 	      .attr("transform", "rotate(-90)")
-	      .attr("y", 12)
+	      .attr("y", 6)
 	      .attr("dy", ".71em")
 	      .style("text-anchor", "end")
-	      .text("No Of Messages");
+	      .text("Karma Level");
 
 	  svg.selectAll(".bar")
 	      .data(data)
@@ -65,15 +62,14 @@ d3.json("getchattyusers", function(error, data) {
 	      .attr("class", "bar")
 	      .attr("x", function(d) { return x(d.user); })
 	      .attr("width", x.rangeBand())
-	      .attr("y", function(d) { return y(d.noOfMessages); })
-	      .attr("height", function(d) { return height - y(d.noOfMessages); })
+	      .attr("y", function(d) { return y(d.noOfKarma); })
+	      .attr("height", function(d) { return height - y(d.noOfKarma); })
 	    .append("svg:title")
-	    	.text(function(d, i) { return "Message count is " + d.noOfMessages; })
+	    	.text(function(d, i) { return "Karma level is " + d.noOfKarma; })
 
 	  d3.select("input").on("change", change);
 
 	  var sortTimeout = setTimeout(function() {
-
 	    // d3.select("input").property("checked", true).each(change);
 	  }, 2000);
 
@@ -82,7 +78,7 @@ d3.json("getchattyusers", function(error, data) {
 
 	    // Copy-on-write since tweens are evaluated after a delay.
 	    var x0 = x.domain(data.sort(this.checked
-	        ? function(a, b) { return b.noOfMessages - a.noOfMessages; }
+	        ? function(a, b) { return b.noOfKarma - a.noOfKarma; }
 	        : function(a, b) { return d3.ascending(a.user, b.user); })
 	        .map(function(d) { return d.user; }))
 	        .copy();

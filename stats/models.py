@@ -141,6 +141,19 @@ def getFullUserCountWeek(channelName):
     week = timezone.make_aware(week, timezone.get_current_timezone())
     return getFullUserCount(channelName, week)
 
+def getKarmaUsers(channelName):
+    if (cache.get('getKarmaUsers') is None):
+        result = Users.objects.using('stats').filter(karma__gt=0).order_by('-karma')[:60];
+        result = list(result)
+        resultSet = []
+        for i in result:
+            resultSet.append({'user': i.user, 'noOfKarma': i.karma})
+        cache.set('getKarmaUsers', resultSet, 600)
+    else:
+        resultSet = cache.get('getKarmaUsers')
+    return resultSet
+
+
 def getChattyUsers(channelName):
     # Warning, this does not filter by channel, default #web
     if (cache.get('getChattyUsers') is None):
