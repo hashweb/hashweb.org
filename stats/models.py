@@ -148,7 +148,8 @@ def getKarmaUsers(channelName):
         result = list(result)
         resultSet = []
         for i in result:
-            resultSet.append({'user': i.user, 'noOfKarma': i.karma})
+            print i
+            resultSet.append({'user': i['user'], 'noOfKarma': i['karma']})
         cache.set('getKarmaUsers', resultSet, 600)
     else:
         resultSet = cache.get('getKarmaUsers')
