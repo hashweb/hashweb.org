@@ -143,7 +143,7 @@ def getFullUserCountWeek(channelName):
 
 def getKarmaUsers(channelName):
     if (cache.get('getKarmaUsers') is None):
-        result = Users.objects.using('stats').filter(karma__gt=0).order_by('-karma')[:60];
+        result = Users.objects.using('stats').filter(karma__gt=0).values('user').annotate(karma=Sum('karma')).order_by('-karma')[:60];
         result = list(result)
         resultSet = []
         for i in result:
