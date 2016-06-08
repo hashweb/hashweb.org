@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/stats/', include('stats.api_urls')),
     url(r'^stats/', include('stats.urls')),
+    url(r'^eurostats$', 'hashweb.views.euro_stats'),
     # url(r'^stats', 'stats.views.index'),
     url(r'^$', 'hashweb.views.index')
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
