@@ -148,7 +148,6 @@ def getKarmaUsers(channelName):
         result = list(result)
         resultSet = []
         for i in result:
-            print(i)
             resultSet.append({'user': i['user'], 'noOfKarma': i['karma']})
         cache.set('getKarmaUsers', resultSet, 600)
     else:
@@ -454,7 +453,6 @@ def convert_banmask_to_userObj(banmask):
 
     # We need to make sure any occurance of * is converted to .* (so its regex compatible)
     banmask = re.sub('\*', '.*', banmask)
-    print(banmask)
     try:
         userObj = Messages.objects.filter(user__host__iregex=banmask).order_by('-timestamp')[0].user
     except:
@@ -498,8 +496,6 @@ def update_ban_obj(banID, banInput):
         if 'reason' in banInput:
             banObj.reason = banInput['reason']
 
-        print(banObj.reason)
-        print(banObj.reminder_time)
         banObj.save()
         return True
     else:

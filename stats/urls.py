@@ -1,11 +1,11 @@
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import     include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
 from stats import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     url(r'^search', views.search),
     url(r'^logs/(\d*)', views.getConvoPartial),
@@ -28,6 +28,6 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
