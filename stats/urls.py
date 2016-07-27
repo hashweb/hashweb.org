@@ -3,37 +3,28 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-import debug_toolbar
-admin.autodiscover()
+from stats import views
 
-
-urlpatterns = patterns('')
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += patterns('',
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    )
-
-urlpatterns += patterns('',
+urlpatterns = patterns('',
     # Examples:
-    url(r'^search', 'stats.views.search'),
-    url(r'^logs/(\d*)', 'stats.views.getConvoPartial'),
-    url(r'^users/(.*)', 'stats.views.getUserInfo'),
-    url(r'^getchattyusers', 'stats.views.getChattyUsers'),
-    url(r'^getkarmausers', 'stats.views.getKarmaUsers'),
-    url(r'^getfullusercountweek', 'stats.views.getFullUserCountWeek'),
-    url(r'^getfullusercounttoday', 'stats.views.getFullUserCountToday'),
-    url(r'^getfullusercount', 'stats.views.getFullUserCount'),
-    url(r'^getusertimeonline/(.*)$', 'stats.views.getUserTimeOnline'),
-    url(r'^bans/$', 'stats.views.showBansPage'),
-    url(r'^bans/update', 'stats.views.reIndexBans'),
-    url(r'^bans/(\d*)', 'stats.views.adjustBan'),
+    url(r'^search', views.search),
+    url(r'^logs/(\d*)', views.getConvoPartial),
+    url(r'^users/(.*)', views.getUserInfo),
+    url(r'^getchattyusers', views.getChattyUsers),
+    url(r'^getkarmausers', views.getKarmaUsers),
+    url(r'^getfullusercountweek', views.getFullUserCountWeek),
+    url(r'^getfullusercounttoday', views.getFullUserCountToday),
+    url(r'^getfullusercount', views.getFullUserCount),
+    url(r'^getusertimeonline/(.*)$', views.getUserTimeOnline),
+    url(r'^bans/$', views.showBansPage),
+    url(r'^bans/update', views.reIndexBans),
+    url(r'^bans/(\d*)', views.adjustBan),
 
     # Open API stuff
-    url(r'^users/(.*)$', 'stats.views.userInfo'),
+    url(r'^users/(.*)$', views.userInfo),
 
 
-    url(r'^$', 'stats.views.index'),
+    url(r'^$', views.index),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),

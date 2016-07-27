@@ -1,5 +1,5 @@
 import json
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -162,7 +162,7 @@ def __getMostFullTime(channelName):
 
 def getUserTimeOnline(request, userName):
 	channelName = '#' + 'web'
-	userName = urllib.unquote(userName)
+	userName = urllib.parse.unquote(userName)
 	return HttpResponse(json.dumps(models.getUserTimeOnline(channelName, userName)), content_type="application/json")
 
 
