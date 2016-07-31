@@ -40,34 +40,12 @@ userPass = data['db']['password']
 # ipython notebook for a better shell
 subprocess.call(['apt-get', 'update'])
 #'libjpeg8', 'libjpeg-dev', 'libpng', 'libpng-dev' are for Django-wiki (pip) / http://django-wiki.readthedocs.org/en/latest/installation.html
-subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python3-dev', 'python3-pip', 'git', 'ipython-notebook', 'memcached', 'htop'])
-subprocess.call(['pip3', 'install', 'psycopg2'])
-subprocess.call(['pip3', 'install', 'Django'])
-subprocess.call(['pip3', 'install', 'python-memcached'])
-subprocess.call(['pip3', 'install', 'uwsgitop']) # Useful for monitering uwsgi processes
-subprocess.call(['pip3', 'install', 'django-debug-toolbar'])
-subprocess.call(['pip3', 'install', 'django_notify'])
-
-
-# Get Limnoria & install it
-os.chdir('../');
-if not os.path.exists('Limnoria'):
-	print('Grabbing dependancy Limnoria...')
-	subprocess.call(['git', 'clone', 'git://github.com/ProgVal/Limnoria.git']);
-os.chdir('Limnoria');
-subprocess.call(['python3', 'setup.py', 'install'])
-os.chdir('../')
-
-# # Get the bootstrapped logbot project
-# subprocess.call(['wget', 'http://logs.hashweb.org/dev/logbot.tar.gz'])
-# subprocess.call(['mkdir', 'logbot'])
-# subprocess.call(['tar', '-zxvf', 'logbot.tar.gz', 'logbot'])
+subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python3-pip', 'git', 'ipython-notebook', 'memcached', 'htop'])
+subprocess.call(['pip3', 'install', '-r', 'requirements.txt'])
 
 
 print('Pulling down latest database dump....')
-# os.chdir('logbot/plugins/LogsToDB')
-# os.remove('logs_stats.sql')
-subprocess.call(['wget', 'http://logs.hashweb.org/dev/hashweb_all.sql'])
+subprocess.call(['wget', 'http://logs.hashweb.org/dev/hashweb_all.gz'])
 
 #Start up memcached
 print('Starting up Memcached....')
@@ -75,4 +53,5 @@ os.system('memcached -d -s /tmp/memcached.sock')
 
 # Creating a new user is a pain, so just let sandboxed users use the postgres user
 # os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD \'%s\';" | sudo -u postgres psql' % (userName, userPass))
+os.system('gunzip -c hashweb_all.gz > hashweb_all.sql')
 os.system('sudo -u postgres psql -f hashweb_all.sql postgres')

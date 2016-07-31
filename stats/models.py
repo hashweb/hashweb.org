@@ -284,7 +284,7 @@ def lastSeenDelta(channelName, userName):
 def getConvoPartialFromID(channelName, message_ID, length):
     channel = _getChannelID(channelName)
     message_ID_end =  message_ID + length;
-    return Messages.objects.using('stats').filter(id__gte=message_ID).filter(id__lt=message_ID_end).filter(channel_id=channel).filter(action='message').select_related('users')
+    return Messages.objects.using('stats').filter(id__gte=message_ID).filter(id__lt=message_ID_end).filter(channel_id=channel).filter(action='message').select_related('user')
 
 def doesUserExist(username=None):
     if Users.objects.using('stats').filter(user=username):
@@ -331,7 +331,7 @@ def getChannelTopic(channelName):
 
 def isUserOnline(username):
     # select action from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' order by timestamp desc LIMIT 1;
-    result = Messages.objects.using('stats').select_related('users').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
+    result = Messages.objects.using('stats').select_related('user').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
     if result[0] == 'quit' or result[0] == 'part':
         return False 
     else:

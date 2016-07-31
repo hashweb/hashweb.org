@@ -1,8 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 require "JSON"
+unless Vagrant.has_plugin?('vagrant-vbguest')
+  raise 'vagrant-vbguest is not installed!'
+end
 
-Vagrant::Config.run do |config|
+Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
@@ -17,12 +20,13 @@ Vagrant::Config.run do |config|
   # via the IP. Host-only networks can talk to the host machine as well as
   # any other machines on the same network, but cannot be accessed (through this
   # network interface) by any external networks.
-  config.vm.network :hostonly, "192.168.192.15"
+  config.vm.network "private_network", ip: "192.168.192.15"
 
   # Assign this VM to a bridged network, allowing you to connect directly to a
   # network using the host's network device. This makes the VM appear as another
   # physical device on your network.
-  config.vm.network :bridged
+  config.vm.network "public_network"
+  config.vm.hostname = "sandbox.hashweb"
 
   # Forward a port from the guest to the host, which allows for outside
   # computers to access the VM, whereas host only networking does not.
@@ -32,7 +36,7 @@ Vagrant::Config.run do |config|
   # an identifier, the second is the path on the guest to mount the
   # folder, and the third is the path on the host to the actual folder.
   data = JSON.parse(IO.read('config.json'))
-  data['vm_config']['shared_folder'].each { |item| config.vm.share_folder item['name'], item['path'], item['host_path'] }
+  data['vm_config']['shared_folder'].each { |item| config.vm.synced_folder item['host_path'], item['path']  }
   # config.vm.share_folder "logviewer", "/home/jason/logviewer", "../logviewer"
 
   # Enable provisioning with Puppet stand alone.  Puppet manifests
