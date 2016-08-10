@@ -389,7 +389,7 @@ def getTotalMessagesFromChannel(channelName):
 
 def search(channelName, query):
     # Cache keys cannot have spaces in them, hash them up, as we never know what people will type in
-    key = hashlib.sha256('search_' + query).hexdigest()
+    key = hashlib.sha256(b'search_' + query.encode('utf-8')).hexdigest()
     channel = _getChannelID(channelName)
     results = []
     if cache.get(key):

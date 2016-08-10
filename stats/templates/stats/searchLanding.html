@@ -5,7 +5,7 @@
     <div class="container page-wrap" data-user="{{username}}">
         <h1>Search</h1>
         <h2>{{q}}</h2>
-        <a class="return-to-stats" href="{% url 'stats.views.index' %}">Return to stats</a>
+        <a class="return-to-stats" href="{% url 'stats_home' %}">Return to stats</a>
         <!--[if lt IE 8]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -17,8 +17,8 @@
         		{% for item in results %}
         			<li>
         				
-	        				<span class="search-timestamp"><a href="{% url 'stats.views.getConvoPartial' item.id %}">[{{item.timestamp}}]</a></span>
-	        				<span class="search-user">&lt;<a href="{% url 'stats.views.getUserInfo' item.user %}">{{item.user}}&gt;</a></span>
+	        				<span class="search-timestamp"><a href="{% url 'stats_convopartial' item.id %}">[{{item.timestamp}}]</a></span>
+	        				<span class="search-user">&lt;<a href="{% url 'stats_userinfo' item.user %}">{{item.user}}&gt;</a></span>
 	        				<span class="search-content">{{item.content}}</span>
 	        			
         			

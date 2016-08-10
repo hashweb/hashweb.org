@@ -39,7 +39,6 @@ userPass = data['db']['password']
 # libpq-dev and python-dev needs to be installed for psycopg2
 # ipython notebook for a better shell
 subprocess.call(['apt-get', 'update'])
-#'libjpeg8', 'libjpeg-dev', 'libpng', 'libpng-dev' are for Django-wiki (pip) / http://django-wiki.readthedocs.org/en/latest/installation.html
 subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python3-pip', 'git', 'ipython-notebook', 'memcached', 'htop'])
 subprocess.call(['pip3', 'install', '-r', 'requirements.txt'])
 

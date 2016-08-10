@@ -4,11 +4,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 from stats import views
+import stats
 
 urlpatterns = [
     # Examples:
     url(r'^search', views.search),
-    url(r'^logs/(\d*)', views.getConvoPartial),
+    url(r'^logs/(\d*)', views.getConvoPartial, name='stats_convopartial'),
     url(r'^users/(.*)', views.getUserInfo),
     url(r'^getchattyusers', views.getChattyUsers),
     url(r'^getkarmausers', views.getKarmaUsers),
@@ -21,10 +22,10 @@ urlpatterns = [
     url(r'^bans/(\d*)', views.adjustBan),
 
     # Open API stuff
-    url(r'^users/(.*)$', views.userInfo),
+    url(r'^users/(.*)$', views.userInfo, name='stats_userinfo'),
 
 
-    url(r'^$', views.index),
+    url(r'^$', stats.views.index, name="stats_home"),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
