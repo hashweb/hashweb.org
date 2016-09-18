@@ -5,7 +5,7 @@
     <div class="container page-wrap" data-user="{{username}}">
         <h1>Bans</h1>
         <h2>{{q}}</h2>
-        <a class="return-to-stats" href="{% url 'stats.views.index' %}">Return to stats</a>
+        <a class="return-to-stats" href="{% url 'stats_home' %}">Return to stats</a>
         <!--[if lt IE 8]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -23,8 +23,8 @@
                 <tr>
                     <td>{{banItem.id}}</td>
                     <td>{{banItem.banmask}}</td>
-                    <td><a href="{% url 'stats.views.getUserInfo' banItem.user_name %}">{{banItem.user_name}}</a></td>
-                    <td><a href="{% url 'stats.views.getUserInfo' banItem.banned_by %}">{{banItem.banned_by}}</a></td>
+                    <td><a href="{% url 'stats_userinfo' banItem.user_name %}">{{banItem.user_name}}</a></td>
+                    <td><a href="{% url 'stats_userinfo' banItem.banned_by %}">{{banItem.banned_by}}</a></td>
                     <td>{{banItem.reminder_time}}</td>
                     <td>{{banItem.reason}}</td>
                     <td>{{banItem.timestamp}}</td>
