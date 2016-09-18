@@ -174,11 +174,8 @@ def showBansPage(request):
 
 @csrf_exempt
 def reIndexBans(request):
-	if (request.method == "POST"):
-		models.process_bans_table()
-		return HttpResponse(json.dumps({"message": "Table Updated"}), content_type="application/json")
-	else:
-		return redirect('stats.views.showBansPage')
+	models.process_bans_table()
+	return HttpResponse(json.dumps({"message": "Table Updated"}), content_type="application/json")
 
 
 @csrf_exempt
