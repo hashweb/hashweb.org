@@ -168,6 +168,7 @@ def getUserTimeOnline(request, userName):
 
 
 	# ----- Bans -------
+@cache_page(60 * 5)
 def showBansPage(request):
 	bansList = models.get_list_of_bans()
 	return render(request, 'stats/bans.html', locals())
