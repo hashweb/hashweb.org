@@ -198,3 +198,19 @@ def adjustBan(request, ID):
 	else:
 		return redirect('stats.views.showBansPage')
 
+def apiBansIndex(request):
+	bansList = models.get_list_of_bans()
+	viewList = []
+	for ban in bansList:
+		banObject = {}
+		banObject['user'] = ban.user_name
+		banObject['banmask'] = ban.banmask
+		banObject['banned_by'] = ban.banned_by
+		banObject['timestamp'] = ban.timestamp.__str__()
+		banObject['id'] = ban.id
+		viewList.append(banObject)
+
+
+	return HttpResponse(json.dumps(viewList), content_type="application/json")
+
+

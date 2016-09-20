@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^api/stats/', include('stats.api_urls')),
     url(r'^stats/', include('stats.urls')),
     url(r'^eurostats$', views.euro_stats),
+    url(r'^accounts/', include('registration.backends.hmac.urls')),
     # url(r'^stats', 'stats.views.index'),
     url(r'^$', views.index)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

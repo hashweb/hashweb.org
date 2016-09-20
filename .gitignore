@@ -1,6 +1,6 @@
 *.pyc
 
-settings.py
+local_settings.py
 hashweb.wsgi
 hashweb/uwsgi_params
 hashweb_uwsgi.ini

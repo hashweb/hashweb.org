@@ -6,3 +6,4 @@ python-memcached
 uwsgitop 
 django-debug-toolbar
 django_notify
+django-registration
