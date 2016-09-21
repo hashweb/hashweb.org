@@ -1,0 +1,10 @@
+{
+	"name": "Hashweb",
+	"version": "0.0.1",
+	"dependencies": {
+        "bootstrap": "latest",
+        "requirejs": "latest",
+        "html5-boilerplate" : "latest",
+        "d3" : "latest"
+    }
+}

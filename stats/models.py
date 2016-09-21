@@ -86,6 +86,7 @@ class Bans(models.Model):
     still_banned = models.NullBooleanField()
     banned_by_id = models.ForeignKey('Users', related_name='+', db_column='banned_by_id')
     row_processed = models.NullBooleanField()
+    ban_length = models.IntegerField(null=True)
 
     class Meta:
         managed = False
