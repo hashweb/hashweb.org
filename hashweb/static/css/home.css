@@ -1,0 +1,40 @@
+body {
+	background: url('../img/landing-background.png');
+	font-family: 'Open Sans', sans-serif;
+	color: #CECECE;
+}
+
+a {
+	color: #CECECE;
+	text-decoration: none;
+}
+
+.logo-wrap {
+	width: 469px;
+	height: 129px;
+	margin: 0 auto;
+	margin-top: 10%;
+}
+
+.landing-container {
+	width: 469px;
+	display: flex;
+	margin: 0 auto;
+	justify-content: center;
+	flex-flow: column nowrap;
+	align-content: center;
+	align-items: center;
+	margin-top: 10%;
+}
+
+.hashweb-logo {
+	margin-bottom: 20px
+}
+
+nav {
+	font-size: 42px;
+}
+
+.github-logo {
+  margin-top: 16px;
+}

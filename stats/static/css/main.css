@@ -1,13 +1,28 @@
-body { 
+body {
 /*  font-size: 12px;*/
   font-family: 'Open Sans', sans-serif;
 }
 
-path { 
+path {
     stroke: steelblue;
     stroke-width: 2;
     fill:  rgb(78, 124, 162);
 }
+
+
+/* Bans Table */
+.bans-table__td--ban-length input {
+    width: 62px;
+}
+
+.bans-table__row input {
+  border-color: transparent;
+}
+
+.bans-table__row:hover input {
+  border-color: initial;
+}
+
 
 .axis path,
 .axis line {
@@ -58,8 +73,16 @@ path {
   margin-right: 16px;
 }
 
-.header-container {
-  line-height: 48px;
+.main-menu-item-wrap {
+    height: 65px;
+    align-items: center;
+    display: flex;
+}
+
+.main-menu-login {
+    color: #999;
+    margin-top: 4px;
+    display: block;
 }
 
 .header-web-logo {

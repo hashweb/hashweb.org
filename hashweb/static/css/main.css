@@ -1,0 +1,308 @@
+body {
+/*  font-size: 12px;*/
+  font-family: 'Open Sans', sans-serif;
+}
+
+path {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill:  rgb(78, 124, 162);
+}
+
+
+/* Bans Table */
+.bans-table__td--ban-length input {
+    width: 62px;
+}
+
+.bans-table__row input {
+  border-width: 0;
+}
+
+.bans-table__row:hover input {
+  border-width: 2px;
+}
+
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.x line {
+  display:none;
+}
+
+.bar {
+  fill: rgb(78, 124, 162);
+  fill-opacity: .9;
+}
+
+.logo-wrap {
+  float: left;
+  margin-right: 16px;
+}
+
+.main-menu-wrap {
+  float: left;
+  height: 65px;
+  align-items: center;
+  line-height: 40px;
+  flex-flow: row;
+  display: flex;
+}
+.main-menu {
+  padding: 0;
+  list-style: none;
+  margin-bottom: 0;
+}
+
+
+.main-menu a {
+  color: #999;
+}
+
+.main-menu a:hover {
+  color: #fff;
+}
+.main-menu li {
+  float: left;
+  margin-right: 16px;
+}
+
+.header-web-logo {
+  width: 150px;
+  margin: 10px 0;
+}
+
+.last-seen {
+  margin-bottom: 16px;
+}
+
+.main-heading {
+  background-color: #222;
+  padding: 0 30px;
+}
+
+
+.navbar-form {
+  float:right;
+}
+.site-title {
+  color: #fff;
+}
+
+.return-to-stats {
+  background-color: #667EFF;
+  color: #FFF;
+  text-decoration: none;
+  margin-bottom: 16px;
+  display: inline-block;
+  padding: 5px;
+}
+
+.return-to-stats::before {
+  content: '<';
+  margin-right: 6px;
+  font-weight: bold;
+}
+
+.logo {
+	width: 240px;
+}
+
+.js-fiddle-logo {
+  width: 132px;
+  position: relative;
+  right: 13px;
+  float: left;
+}
+.seen-table.user {
+  background-color: rgba(0, 128, 0, 0.2);
+}
+
+.user-link {
+  text-decoration: underline;
+}
+
+.seen-table.user::before{
+  content: '---->';
+  position: absolute;
+}
+
+.seen-table-timestamp {
+  min-width: 100px;
+  padding: 30px;
+}
+
+.stat-title {
+  display: block;
+  font-weight: bold;
+}
+
+.online-or-offline-container span {
+  color: #FFF;
+  padding: 7px;
+}
+
+.online-or-offline-container .online {
+  background-color: green;
+}
+
+.online-or-offline-container.offline .online, .online-or-offline-container.online .offline {
+  background-color: grey;
+}
+
+.online-or-offline-container .offline {
+  background-color: red;
+}
+
+.jsfiddles-list {
+  list-style: none;
+}
+
+.on-average-heading {
+  font-style: italic;
+  font-weight: bold;
+}
+
+.avg-figure {
+  font-size: 40px;
+}
+
+table .jsfiddles-list {
+  padding-left: 0;
+}
+
+.jsfiddles-list li {
+  margin-bottom: 7px;
+}
+
+.user-total-messages {
+  font-size: 50px;
+}
+
+.more-stats {
+  float: left;
+  margin-right: 90px;
+}
+
+.time-online {
+  float:left;
+}
+
+.chattyUsers {
+  font-size: 12px;
+}
+
+.user-online-text {
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.graph {
+  position:relative;
+}
+
+.loading-message {
+  position: absolute;
+  left: 41%;
+  top: 30%;
+}
+
+
+/** ====== Search ===== */
+
+.results-wrapper ul {
+  padding:0;
+  list-style: none;
+}
+
+.results-wrapper ul li{
+  margin-bottom: 8px;
+}
+
+.results-wrapper ul li.highlight {
+  -webkit-animation-duration: 1s;
+  -webkit-animation-name: highlight;
+  -moz-animation-duration: 1s;
+  -moz-animation-name: highlight;
+  -webkit-animation-direction: alternate;
+  -webkit-animation-iteration-count: 2;
+}
+
+@-webkit-keyframes highlight {
+  from {
+    background-color: transparent;
+  }
+
+  to {
+    background-color: #FFDD54;
+  }
+}
+
+@-moz-keyframes highlight {
+  from {
+    background-color: transparent;
+  }
+
+  to {
+    background-color: #FFDD54;
+  }
+}
+
+.results-wrapper ul li:nth-child(even) {
+  background-color: #eee;
+}
+
+.results-wrapper a {
+  text-decoration: none;
+  color: #333;
+}
+
+.results-wrapper a:hover {
+  text-decoration: underline;
+}
+
+.search-timestamp {
+
+}
+
+.search-user {
+
+  font-weight: bold;
+}
+
+.search-content {
+
+}
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}

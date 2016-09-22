@@ -7,7 +7,7 @@
 #
 # Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
 # into your database.
-from __future__ import unicode_literals
+
 import datetime
 from datetime import timedelta, date
 import json
@@ -86,6 +86,9 @@ class Bans(models.Model):
     still_banned = models.NullBooleanField()
     banned_by_id = models.ForeignKey('Users', related_name='+', db_column='banned_by_id')
     row_processed = models.NullBooleanField()
+    ban_length = models.IntegerField(null=True)
+    unban_date = models.DateTimeField(blank=True, null=True)
+    last_modified = models.CharField(max_length=500, blank=True)
 
     class Meta:
         managed = False
@@ -148,7 +151,6 @@ def getKarmaUsers(channelName):
         result = list(result)
         resultSet = []
         for i in result:
-            print i
             resultSet.append({'user': i['user'], 'noOfKarma': i['karma']})
         cache.set('getKarmaUsers', resultSet, 600)
     else:
@@ -285,7 +287,7 @@ def lastSeenDelta(channelName, userName):
 def getConvoPartialFromID(channelName, message_ID, length):
     channel = _getChannelID(channelName)
     message_ID_end =  message_ID + length;
-    return Messages.objects.using('stats').filter(id__gte=message_ID).filter(id__lt=message_ID_end).filter(channel_id=channel).filter(action='message').select_related('users')
+    return Messages.objects.using('stats').filter(id__gte=message_ID).filter(id__lt=message_ID_end).filter(channel_id=channel).filter(action='message').select_related('user')
 
 def doesUserExist(username=None):
     if Users.objects.using('stats').filter(user=username):
@@ -332,9 +334,9 @@ def getChannelTopic(channelName):
 
 def isUserOnline(username):
     # select action from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' order by timestamp desc LIMIT 1;
-    result = Messages.objects.using('stats').select_related('users').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
+    result = Messages.objects.using('stats').select_related('user').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
     if result[0] == 'quit' or result[0] == 'part':
-        return False 
+        return False
     else:
         return True
 
@@ -377,7 +379,7 @@ def getUserTimeOnline(channelName, username):
 
         cache.set('getUserTimeOnline__' + username, results, 300)
         return results
-        
+
 
 # This is a slow query, so will need caching, start off with 1 hour
 def getTotalMessagesFromChannel(channelName):
@@ -390,7 +392,7 @@ def getTotalMessagesFromChannel(channelName):
 
 def search(channelName, query):
     # Cache keys cannot have spaces in them, hash them up, as we never know what people will type in
-    key = hashlib.sha256('search_' + query).hexdigest()
+    key = hashlib.sha256(b'search_' + query.encode('utf-8')).hexdigest()
     channel = _getChannelID(channelName)
     results = []
     if cache.get(key):
@@ -454,7 +456,6 @@ def convert_banmask_to_userObj(banmask):
 
     # We need to make sure any occurance of * is converted to .* (so its regex compatible)
     banmask = re.sub('\*', '.*', banmask)
-    print banmask
     try:
         userObj = Messages.objects.filter(user__host__iregex=banmask).order_by('-timestamp')[0].user
     except:
@@ -486,20 +487,16 @@ def get_list_of_bans():
     return Bans.objects.filter(still_banned=True).order_by("-timestamp")
 
 def update_ban_obj(banID, banInput):
+    print(banInput)
     try:
         banObj = Bans.objects.filter(id=banID)[0]
     except:
         return False
 
     if banObj and banInput:
-        if 'reminderTime' in banInput:
-            banObj.reminder_time = banInput['reminderTime']
+        setattr(banObj, banInput['name'], banInput['val'])
+        banObj.last_modified = banInput['last_modified']
 
-        if 'reason' in banInput:
-            banObj.reason = banInput['reason']
-
-        print banObj.reason
-        print banObj.reminder_time
         banObj.save()
         return True
     else:

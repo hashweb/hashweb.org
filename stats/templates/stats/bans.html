@@ -2,38 +2,50 @@
 {% load staticfiles %}
 {% block title %} - {{username}}{% endblock %}
 {% block content %}
-    <div class="container page-wrap" data-user="{{username}}">
+    <div class="container-fluid page-wrap" data-user="{{username}}">
         <h1>Bans</h1>
         <h2>{{q}}</h2>
-        <a class="return-to-stats" href="{% url 'stats.views.index' %}">Return to stats</a>
+        <a class="return-to-stats" href="{% url 'stats_home' %}">Return to stats</a>
+
+        <p>
+        You can either unban a user by setting an amount of hours after the ban date, for example 10 hours means, the user is banned for 10 hours after the ban date, after this time they will be unbanned. You can set 0 to unban straight away.<br />
+        For longer durations you can set a date, of sometime in the future</p>
+        <p>You can only use one. If you set both a date and a number of hours, the hours will take precedence, and the unban date will be ignored</p>
         <!--[if lt IE 8]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <table class="table">
-            <tr>
-                <th>ID</th>
-                <th>Banmask</th>
-                <th>User Name</th>
-                <th>Banned By</th>
-                <th>Reminder Time</th>
-                <th>Reason</th>
-                <th>Date</th>
-            </tr>
-            {% for banItem in bansList %}
+        <div class="table-responsive">
+            <table class="table table-hover bans-table">
                 <tr>
-                    <td>{{banItem.id}}</td>
-                    <td>{{banItem.banmask}}</td>
-                    <td><a href="{% url 'stats.views.getUserInfo' banItem.user_name %}">{{banItem.user_name}}</a></td>
-                    <td><a href="{% url 'stats.views.getUserInfo' banItem.banned_by %}">{{banItem.banned_by}}</a></td>
-                    <td>{{banItem.reminder_time}}</td>
-                    <td>{{banItem.reason}}</td>
-                    <td>{{banItem.timestamp}}</td>
+                    <th>ID</th>
+                    <th>Banmask</th>
+                    <th>User Name</th>
+                    <th>Banned By</th>
+                    <th>Ban Length (hours)</th>
+                    <th>Unban Date</th>
+                    <th>Reason</th>
+                    <th>Date</th>
+                    <th>Last Modified By</th>
                 </tr>
-            {% endfor %}
-        </table>
+                {% for banItem in bansList %}
+                    <tr class="bans-table__row" data-id="{{banItem.id}}">
+                        <td>{{banItem.id}}</td>
+                        <td>{{banItem.banmask}}</td>
+                        <td><a href="{% url 'stats_userinfo' banItem.user_name %}">{{banItem.user_name}}</a></td>
+                        <td><a href="{% url 'stats_userinfo' banItem.banned_by %}">{{banItem.banned_by}}</a></td>
+                        <td class="bans-table__td--ban-length"><input type="number" data-id="{{banItem.id}}" data-name="ban_length" max="336" value="{{banItem.ban_length|default:''}}" /></td>
+                        <td class="bans-table__td--unban-date"><input type="date" data-id="{{banItem.id}}" data-name="unban_date" min="{{banItem.timestamp|date:'Y-m-d'}}" /></td>
+                        <td class="bans-table__td--ban-reason"><input type="text" data-id="{{banItem.id}}" data-name="reason" value="{{banItem.reason}}"/></td>
+                        <td>{{banItem.timestamp}}</td>
+                        <td class="bans-table__td--last-modified">{{banItem.last_modified}}</td>
+                        {% csrf_token %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
 
 {% endblock %}
 
 {% block js %}
-    <script src="{% static 'vendor/requirejs/require.js' %}" data-main="{% static 'js/modules/search' %}"></script>
+    <script src="{% static 'vendor/requirejs/require.js' %}" data-main="{% static 'js/js-modules/bansUpdater' %}"></script>
 {% endblock %}

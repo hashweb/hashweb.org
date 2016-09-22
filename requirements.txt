@@ -1,3 +1,9 @@
-Django==1.7.4
+Django
 bs4
-requests
+psycopg2
+python-memcached
+# Useful for monitering uwsgi processes
+uwsgitop 
+django-debug-toolbar
+django_notify
+django-registration

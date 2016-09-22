@@ -13,37 +13,50 @@
         <!-- Place favicon.ico and apple-touch-icon(s) in the root directory -->
 
         <!--<link rel="stylesheet" href="{% static 'vendor/html5-boilerplate/css/normalize.css' %}"> -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
         <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     </head>
     <body>
     <header class="main-heading header-container">
       <div class="container">
-        <a href="http://hashweb.org" class="logo-wrap">
-          <img src="{% static 'img/hashweb_logo.png' %}" alt="#web Logo" class="header-web-logo" title="#Web" />
-        </a>
-        <nav class="main-menu-wrap">
-          <ul class="main-menu cf">
-            <li>
-              <a href="http://wiki.hashweb.org"><h4>Wiki</h4></a>
-            </li>
-            <li>
-              <a href="{% url 'stats.views.index' %}"><h4>Stats</h4></a>
-            </li>
-          </ul>
-        </nav>
-
-        <form role="form" class="navbar-form" method="GET" action="/stats/search">
-          <div class="form-group">
-            <input type="text" maxlength="50" name="q" class="form-control" placeholder="Search Logs..">
-          </div>
-        </form>
+        <div class="row">
+            <div class="col-md-8">
+                <a href="http://hashweb.org" class="logo-wrap">
+                  <img src="{% static 'img/hashweb_logo.png' %}" alt="#web Logo" class="header-web-logo" title="#Web" />
+                </a>
+                <nav class="main-menu-wrap">
+                  <ul class="main-menu cf">
+                    <li>
+                      <a href="{% url 'stats_home' %}"><h4>Stats</h4></a>
+                    </li>
+                    {% if is_op %}
+                    <li>
+                        <a href="{% url 'bans_index' %}"><h4>Bans</h4></a>
+                    </li>
+                    {% endif %}
+                  </ul>
+                </nav>
+            </div>
+            <div class="col-md-2 main-menu-item-wrap" style="flex-direction: row-reverse;">
+            {% if is_authenticated %}
+                <span class="main-menu-login">Logged In: {{current_user}} (<a href="/accounts/logout">Logout</a>)</span>
+            {% else %}
+                <span class="main-menu-login"><a href="/accounts/login">Login</a></span>
+            {% endif %}
+            </div>
+            <div class="col-md-2 main-menu-item-wrap">
+                <form role="form" class="navbar-form" method="GET" action="/stats/search">
+                  <div class="form-group">
+                    <input type="text" maxlength="50" name="q" class="form-control" placeholder="Search Logs..">
+                  </div>
+                </form>
+            </div>
       </div>
     </header>
 
     {% block content %}{% endblock %}
-        
+
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js"></script>

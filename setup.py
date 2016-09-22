@@ -1,13 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import subprocess
 import os
 import getpass
 import sys
 import json
-import urllib2
 
 if not os.path.exists('config.json'):
-	print "First a config file needs to be created......"
+	print("First a config file needs to be created......")
 	userName = raw_input('Please enter your user name (pref your OS username): ')
 	userPass = getpass.getpass('Please enter your password for the Postgresql database (won\'t echo)');
 	with open('config.json', 'w') as configFile:
@@ -40,46 +39,18 @@ userPass = data['db']['password']
 # libpq-dev and python-dev needs to be installed for psycopg2
 # ipython notebook for a better shell
 subprocess.call(['apt-get', 'update'])
-#'libjpeg8', 'libjpeg-dev', 'libpng', 'libpng-dev' are for Django-wiki (pip) / http://django-wiki.readthedocs.org/en/latest/installation.html
-subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python-dev', 'python-pip', 'git', 'ipython-notebook', 'memcached', 'htop', 'libjpeg8', 'libjpeg-dev', 'libpng12-0', 'libpng12-dev'])
-subprocess.call(['pip', 'install', 'psycopg2'])
-subprocess.call(['pip', 'install', 'Django==1.7.4'])
-subprocess.call(['pip', 'install', 'python-memcached'])
-subprocess.call(['pip', 'install', 'Pillow']) # for django-wiki
-subprocess.call(['pip', 'install', 'uwsgitop']) # Useful for monitering uwsgi processes
-subprocess.call(['pip', 'install', 'git+https://github.com/benjaoming/django-wiki.git']) # The version from PIP seems outdated, use the master branch on github instead
-subprocess.call(['pip', 'install', 'djrill']) # Mandrill Email
-subprocess.call(['pip', 'install', 'django-debug-toolbar'])
-subprocess.call(['pip', 'install', 'django_notify'])
+subprocess.call(['apt-get', 'install', '-y', 'postgresql', 'libpq-dev', 'python3-pip', 'git', 'ipython-notebook', 'memcached', 'htop'])
+subprocess.call(['pip3', 'install', '-r', 'requirements.txt'])
 
 
-# Get Limnoria & install it
-os.chdir('../');
-if not os.path.exists('Limnoria'):
-	print 'Grabbing dependancy Limnoria...'
-	subprocess.call(['git', 'clone', 'git://github.com/ProgVal/Limnoria.git']);
-os.chdir('Limnoria');
-subprocess.call(['python', 'setup.py', 'install'])
-os.chdir('../')
-
-# Get the bootstrapped logbot project
-subprocess.call(['wget', 'http://logs.hashweb.org/dev/logbot.tar.gz'])
-subprocess.call(['mkdir', 'logbot'])
-subprocess.call(['tar', '-zxvf', 'logbot.tar.gz', 'logbot'])
-
-
-print 'Pulling down latest database dump....'
-os.chdir('logbot/plugins/LogsToDB')
-os.remove('logs_stats.sql')
-subprocess.call(['wget', 'http://logs.hashweb.org/dev/logs_stats.sql'])
+print('Pulling down latest database dump....')
+subprocess.call(['wget', 'http://logs.hashweb.org/dev/hashweb_all.gz'])
 
 #Start up memcached
-print 'Starting up Memcached....'
+print('Starting up Memcached....')
 os.system('memcached -d -s /tmp/memcached.sock')
 
 # Creating a new user is a pain, so just let sandboxed users use the postgres user
 # os.system('echo "CREATE ROLE %s LOGIN ENCRYPTED PASSWORD \'%s\';" | sudo -u postgres psql' % (userName, userPass))
-os.system('echo "CREATE DATABASE logs_stats" | sudo -u postgres psql')
-os.system('sudo -u postgres psql logs_stats < logs_stats.sql')
-os.system('echo "ALTER USER postgres WITH PASSWORD \'%s\'" | sudo -u postgres psql' % userPass)
-os.system('echo "CREATE DATABASE hashweb" | sudo -u postgres psql')
+os.system('gunzip -c hashweb_all.gz > hashweb_all.sql')
+os.system('sudo -u postgres psql -f hashweb_all.sql postgres')
