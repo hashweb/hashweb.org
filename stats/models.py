@@ -87,6 +87,8 @@ class Bans(models.Model):
     banned_by_id = models.ForeignKey('Users', related_name='+', db_column='banned_by_id')
     row_processed = models.NullBooleanField()
     ban_length = models.IntegerField(null=True)
+    unban_date = models.DateTimeField(blank=True, null=True)
+    last_modified = models.CharField(max_length=500, blank=True)
 
     class Meta:
         managed = False
@@ -334,7 +336,7 @@ def isUserOnline(username):
     # select action from messages inner join users on (messages.user = users.id) where users.user = 'Jayflux' order by timestamp desc LIMIT 1;
     result = Messages.objects.using('stats').select_related('user').filter(user__user__iexact=username).order_by('-timestamp').values_list('action')[0]
     if result[0] == 'quit' or result[0] == 'part':
-        return False 
+        return False
     else:
         return True
 
@@ -377,7 +379,7 @@ def getUserTimeOnline(channelName, username):
 
         cache.set('getUserTimeOnline__' + username, results, 300)
         return results
-        
+
 
 # This is a slow query, so will need caching, start off with 1 hour
 def getTotalMessagesFromChannel(channelName):
@@ -485,17 +487,15 @@ def get_list_of_bans():
     return Bans.objects.filter(still_banned=True).order_by("-timestamp")
 
 def update_ban_obj(banID, banInput):
+    print(banInput)
     try:
         banObj = Bans.objects.filter(id=banID)[0]
     except:
         return False
 
     if banObj and banInput:
-        if 'reminderTime' in banInput:
-            banObj.reminder_time = banInput['reminderTime']
-
-        if 'reason' in banInput:
-            banObj.reason = banInput['reason']
+        setattr(banObj, banInput['name'], banInput['val'])
+        banObj.last_modified = banInput['last_modified']
 
         banObj.save()
         return True

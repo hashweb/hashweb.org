@@ -33,11 +33,12 @@
                         <td>{{banItem.banmask}}</td>
                         <td><a href="{% url 'stats_userinfo' banItem.user_name %}">{{banItem.user_name}}</a></td>
                         <td><a href="{% url 'stats_userinfo' banItem.banned_by %}">{{banItem.banned_by}}</a></td>
-                        <td class="bans-table__td--ban-length"><input type="number" data-id="{{banItem.id}}" max="336" value="{{banItem.ban_length|default:''}}" /></td>
-                        <td><input type="date" min="{{banItem.timestamp|date:'Y-m-d'}}" /></td>
-                        <td><input type="text" value="{{banItem.reason}}"/></td>
+                        <td class="bans-table__td--ban-length"><input type="number" data-id="{{banItem.id}}" data-name="ban_length" max="336" value="{{banItem.ban_length|default:''}}" /></td>
+                        <td class="bans-table__td--unban-date"><input type="date" data-id="{{banItem.id}}" data-name="unban_date" min="{{banItem.timestamp|date:'Y-m-d'}}" /></td>
+                        <td class="bans-table__td--ban-reason"><input type="text" data-id="{{banItem.id}}" data-name="reason" value="{{banItem.reason}}"/></td>
                         <td>{{banItem.timestamp}}</td>
-                        <td></td>
+                        <td class="bans-table__td--last-modified">{{banItem.last_modified}}</td>
+                        {% csrf_token %}
                     </tr>
                 {% endfor %}
             </table>

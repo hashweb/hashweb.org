@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^getfullusercounttoday', views.getFullUserCountToday),
     url(r'^getfullusercount', views.getFullUserCount),
     url(r'^getusertimeonline/(.*)$', views.getUserTimeOnline),
-    url(r'^bans/$', views.showBansPage),
+    url(r'^bans/$', views.showBansPage, name='bans_index'),
     url(r'^bans/update', views.reIndexBans),
     url(r'^bans/(\d*)', views.adjustBan),
 

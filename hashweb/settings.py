@@ -16,9 +16,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = '!3!rocelg1h-0^lj@v=gn#nus%=#j=eaj$ogfp@3ktfn=!mxe8'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -27,6 +24,12 @@ TEMPLATE_DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 SITE_ID = 1
+
+LOGIN_REDIRECT_URL = '/stats'
+LOGOUT_REDIRECT_URL = '/stats'
+
+# 4 weeks
+SESSION_COOKIE_AGE = 2419200
 
 
 # Application definition

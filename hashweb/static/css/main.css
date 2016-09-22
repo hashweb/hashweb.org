@@ -1,9 +1,9 @@
-body { 
+body {
 /*  font-size: 12px;*/
   font-family: 'Open Sans', sans-serif;
 }
 
-path { 
+path {
     stroke: steelblue;
     stroke-width: 2;
     fill:  rgb(78, 124, 162);
@@ -71,10 +71,6 @@ path {
 .main-menu li {
   float: left;
   margin-right: 16px;
-}
-
-.header-container {
-  line-height: 48px;
 }
 
 .header-web-logo {
