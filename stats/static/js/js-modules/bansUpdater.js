@@ -1,10 +1,18 @@
 define(function() {
 	function BansUpdater() {
-		this.fetchLatestList();
+		this.init();
 		this.setListeners();
 		this.csrf = null;
         this.updatePaused = false;
 	}
+
+    BansUpdater.prototype.init = function() {
+        if (!this.updatePaused) {
+            this.fetchLatestList();
+        }
+
+        setTimeout(() => { this.init() } , 2000);
+    }
 
 
 	BansUpdater.prototype.fetchLatestList = function() {
@@ -17,8 +25,6 @@ define(function() {
 				})
 			}
 		});
-
-		setTimeout(() => { this.fetchLatestList() } , 5000);
 	}
 
 	BansUpdater.prototype.updatePage = function(jsonResponse) {
@@ -49,10 +55,12 @@ define(function() {
 		});
 
         $('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('focus', data => {
+            console.log('focusing on form element');
             this.updatePaused = true;
         });
 
         $('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('blur', data => {
+            console.log('blur from element');
             this.updatePaused = false;
         });
 	}
