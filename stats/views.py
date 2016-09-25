@@ -181,6 +181,8 @@ def getUserTimeOnline(request, userName):
 def showBansPage(request):
     current_user = request.user
     is_authenticated = request.user.is_authenticated()
+    if not is_authenticated:
+        return redirect('stats.views.index')
     bansList = models.get_list_of_bans()
     return render(request, 'stats/bans.html', locals())
 
