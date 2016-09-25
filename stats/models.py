@@ -494,6 +494,10 @@ def update_ban_obj(banID, banInput):
         return False
 
     if banObj and banInput:
+        # an empty string causes errors, put Null back into the database if there's no data
+        if not banInput['val']:
+            banInput['val'] = None;
+
         setattr(banObj, banInput['name'], banInput['val'])
         banObj.last_modified = banInput['last_modified']
 

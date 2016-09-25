@@ -55,12 +55,10 @@ define(function() {
 		});
 
         $('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('focus', data => {
-            console.log('focusing on form element');
             this.updatePaused = true;
         });
 
         $('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('blur', data => {
-            console.log('blur from element');
             this.updatePaused = false;
         });
 	}
