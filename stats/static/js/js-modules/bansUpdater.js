@@ -27,7 +27,6 @@ define(function() {
                 lastModified = row.querySelector('.bans-table__td--last-modified');
 
 
-            console.log(lastModified);
 			if (item.ban_length) banLength.value = item.ban_length;
 			if (item.unban_date && item.unban_date !== "None") unbanDate.value = item.unban_date;
 			if (item.reason) banReason.value     = item.reason;
