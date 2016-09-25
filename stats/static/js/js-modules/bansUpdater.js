@@ -3,6 +3,7 @@ define(function() {
 		this.fetchLatestList();
 		this.setListeners();
 		this.csrf = null;
+        this.updatePaused = false;
 	}
 
 
@@ -10,12 +11,14 @@ define(function() {
 		fetch('/api/stats/bans').then(response => {
 			if(response.ok) {
 				return response.json().then(json => {
-					this.updatePage(json);
+                    if (!this.updatePaused) {
+					   this.updatePage(json);
+                    }
 				})
 			}
 		});
 
-		setTimeout(() => { this.fetchLatestList() } , 2000);
+		setTimeout(() => { this.fetchLatestList() } , 5000);
 	}
 
 	BansUpdater.prototype.updatePage = function(jsonResponse) {
@@ -35,7 +38,7 @@ define(function() {
 	}
 
 	BansUpdater.prototype.setListeners = function() {
-		$('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').change(data => {
+		$('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('keyup change', data => {
 			var obj = {}
 			var id = data.target.dataset.id;
 			obj['val'] = data.target.value;
@@ -44,6 +47,14 @@ define(function() {
 			this.csrf = (this.csrf) ? this.csrf : document.querySelector('tr[data-id="'+ id +'"] input[name="csrfmiddlewaretoken"]').value;
 			this.sendData(id, obj);
 		});
+
+        $('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('focus', data => {
+            this.updatePaused = true;
+        };
+
+        $('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('blur', data => {
+            this.updatePaused = false;
+        };
 	}
 
 	BansUpdater.prototype.sendData = function(id, obj) {
