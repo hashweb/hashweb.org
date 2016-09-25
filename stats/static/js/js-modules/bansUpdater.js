@@ -50,11 +50,11 @@ define(function() {
 
         $('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('focus', data => {
             this.updatePaused = true;
-        };
+        });
 
         $('.bans-table__td--ban-length input, .bans-table__td--unban-date input, .bans-table__td--ban-reason input').on('blur', data => {
             this.updatePaused = false;
-        };
+        });
 	}
 
 	BansUpdater.prototype.sendData = function(id, obj) {
