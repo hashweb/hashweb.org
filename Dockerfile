@@ -10,4 +10,4 @@ RUN echo 'developer ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 EXPOSE 8080
 # Change to the developer user and its home folder and run the entry point script
 USER developer
-WORKDIR /home/developer
+WORKDIR /hashweb.org

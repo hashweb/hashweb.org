@@ -7,7 +7,7 @@ docker-create:
 	docker create --tty --interactive \
     --name hashweb \
     --hostname hashweb \
-    --volume ${PWD}/../:/home/developer/workspace \
+    --volume ${PWD}:/hashweb.org \
     --publish 8080:8080 \
     hashweb
 
