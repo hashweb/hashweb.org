@@ -112,6 +112,7 @@ STATICFILES_DIRS = (
     BASE_DIR + "/stats/static",
 )
 
+print(STATIC_ROOT)
 try:
     from local_settings import *
 except ImportError as e:

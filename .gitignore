@@ -17,3 +17,4 @@ hashweb/static/vendor/*
 README.html
 
 node_modules
+hashweb_all.*
