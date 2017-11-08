@@ -19,6 +19,7 @@ from django.db.models import Sum
 from django.utils import timezone
 from django.db import connections
 from django.utils.encoding import python_2_unicode_compatible
+from django.contrib.postgres.search import SearchQuery, SearchVector, SearchVectorField
 from django.core.cache import cache
 
 @python_2_unicode_compatible
@@ -39,6 +40,7 @@ class Messages(models.Model):
     action = models.TextField(blank=True) # This field type is a guess.
     timestamp = models.DateTimeField(blank=True, null=True)
     channel_id = models.ForeignKey('Channels', db_column='channel_id')
+    tsv = SearchVectorField(null=False)
 
     class Meta:
         managed = False
@@ -180,27 +182,6 @@ def getUserProfanity(channelName):
         resultSet.append({'user': i.user, 'noOfMessages': i.usercount})
     return resultSet
 
-# def getLatestFiddles(channelName, userName = None):
-#     """
-#     Second argument is optional, if only first option is passed, then it will check fiddles across the whole channel
-#     """
-
-#     # Messages.objects.filter(channel_id=1, content__contains='http://jsfiddle.net/').order_by('-timestamp')
-
-#     channel = _getChannelID(channelName)
-#     if userName is None:
-#         query = "select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s order by messages.timestamp desc LIMIT 5"
-#         arguments = [channel]
-#     else:
-#         query = "select *, regexp_matches(content, '(http://jsfiddle.net/[^\s]*)') from messages inner join users on (messages.user = users.id) WHERE channel_id = %s AND users.user = %s order by messages.timestamp desc LIMIT 5"
-#         arguments = [channel, userName]
-
-#     collection = []
-#     for i in Messages.objects.raw(query, arguments).using('stats'):
-#         collection.append({'fiddleLink': i.regexp_matches[0], 'user': i.user_id, 'timestamp': i.timestamp})
-#     return collection
-
-
 
 def getLatestFiddles(channelName, userName = None):
     """
@@ -211,9 +192,9 @@ def getLatestFiddles(channelName, userName = None):
     collection = []
     if userName is None:
         if (cache.get('latestFiddles') is None):
-            for i in Messages.objects.filter(channel_id=1, content__contains='http://jsfiddle.net/').order_by('-timestamp')[:5]:
-                if re.search('http://jsfiddle.net/[^\s]*', i.content):
-                    fiddleLink = re.search('http://jsfiddle.net/[^\s]*', i.content).group(0)
+            for i in Messages.objects.filter(tsv=SearchQuery('jsfiddle.net/', config='english') | SearchQuery('codepen.io/', config='english')).order_by('-timestamp')[:5]:
+                if re.search('jsfiddle.net/[^\s]*', i.content):
+                    fiddleLink = re.search('jsfiddle.net/[^\s]*', i.content).group(0)
                     collection.append({'fiddleLink': fiddleLink, 'user': i.user, 'timestamp': i.timestamp, 'id': i.id})
 
             cache.set('latestFiddles', collection, 300)
@@ -222,9 +203,9 @@ def getLatestFiddles(channelName, userName = None):
 
     else:
         if cache.get('latestFiddles_' + userName) is None:
-            for i in Messages.objects.filter(channel_id=1, content__contains='http://jsfiddle.net/', user__user=userName).order_by('-timestamp')[:5]:
-                if re.search('http://jsfiddle.net/[^\s]*', i.content):
-                    fiddleLink = re.search('http://jsfiddle.net/[^\s]*', i.content).group(0)
+            for i in Messages.objects.filter(tsv=SearchQuery('jsfiddle.net/', config='english') | SearchQuery('codepen.io/', config='english'), user__user=userName).order_by('-timestamp')[:5]:
+                if re.search('jsfiddle.net/[^\s]*', i.content):
+                    fiddleLink = re.search('jsfiddle.net/[^\s]*', i.content).group(0)
                     collection.append({'fiddleLink': fiddleLink, 'user': i.user, 'timestamp': i.timestamp, 'id': i.id})
             cache.set('latestFiddles_' + userName, collection, 300)
         else:
@@ -406,13 +387,13 @@ def search(channelName, query):
             query = re.sub(userRegex, '', query)
             # If there's a search query, scope that query by user
             if query:
-                for i in Messages.objects.filter(channel_id=1, action="message", content__icontains=query, user__user__iexact=user).order_by('-timestamp')[:60]:
+                for i in Messages.objects.filter(channel_id=1, action="message", tsv=SearchQuery(query, config='english'), user__user__iexact=user).order_by('-timestamp')[:80]:
                     results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
             else:
-                for i in Messages.objects.filter(channel_id=1, action="message", user__user__iexact=user).order_by('-timestamp')[:60]:
+                for i in Messages.objects.filter(channel_id=1, action="message", user__user__iexact=user).order_by('-timestamp')[:80]:
                     results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
         else:
-            for i in Messages.objects.filter(channel_id=1, action="message", content__icontains=query).order_by('-timestamp')[:60]:
+            for i in Messages.objects.filter(channel_id=1, action="message", tsv=SearchQuery(query, config='english')).order_by('-timestamp')[:80]:
                 results.append({'user': i.user.user, 'content': i.content, 'id': i.id, 'timestamp': i.timestamp})
 
         cache.set(key, results, 600)

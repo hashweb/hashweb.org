@@ -42,18 +42,21 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.postgres',
+    'debug_toolbar',
     'stats',
     'django.contrib.humanize',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 
 # MANDRILL_API_KEY = 'VGAzBOasJMk5CFzQTHh5gA'
@@ -112,7 +115,6 @@ STATICFILES_DIRS = (
     BASE_DIR + "/stats/static",
 )
 
-print(STATIC_ROOT)
 try:
     from local_settings import *
 except ImportError as e:

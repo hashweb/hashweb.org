@@ -54,7 +54,7 @@ def getUserInfo(request, username):
     notSeenFor['minutes'] = notSeenFor['seconds'] // 60
     notSeenFor['seconds'] = (notSeenFor['minutes'] * 60)
 
-    avgPostsPerDay = models.avgPerDay('#web', username)
+    avgPostsPerDay = round(models.avgPerDay('#web', username), 2)
     return render(request, 'stats/userinfo.html', locals())
 
 
